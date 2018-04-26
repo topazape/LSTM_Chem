@@ -8,3 +8,4 @@ The model is built using Python 3.6, and utilizes the following packages:
 - tensorflow 1.4.1
 - tqdm
 - joblib
+- Bunch
