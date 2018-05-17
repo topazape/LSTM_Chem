@@ -5,7 +5,7 @@ from generators.generator import LSTMChemGenerator
 from utils.config import process_config
 
 CONFIG_FILE = './configs/LSTMChem_config.json'
-WEIGHT_FILE = './experiments/2018-04-26/LSTM_Chem/checkpoints/LSTM_Chem-22-0.42.hdf5'
+
 def main():
     config = process_config(CONFIG_FILE)
     model = LSTMChem(config)
