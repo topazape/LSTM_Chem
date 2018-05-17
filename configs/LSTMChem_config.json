@@ -1,9 +1,6 @@
 {
 	"exp_name": "LSTM_Chem",
 	"data_filename": "./datasets/dataset.smi",
-	"finetune_data_filename": "./datasets/fine-tune.smi",
-	"finetune_weight_filename": "./experiments/2018-04-26/LSTM_Chem/checkpoints/LSTM_Chem-22-0.42.hdf5",
-	"finetune_sample_num": 100,
 	"data_length": 0,
 	"units": 256,
 	"num_epochs": 22,
@@ -13,12 +10,18 @@
 	"validation_split":0.1,
 	"verbose_training": true,
 	"sampling_temp": 0.75,
-	"finetune_epochs": 10,
-	"finetune_batch_size": 16,
+
 	"checkpoint_monitor": "val_loss",
 	"checkpoint_mode": "min",
 	"checkpoint_save_best_only": true,
 	"checkpoint_save_weights_only": true,
 	"checkpoint_verbose": true,
-	"tensorboard_write_graph": true
+	"tensorboard_write_graph": true,
+
+	"finetune_epochs": 10,
+	"finetune_batch_size": 16,
+	"finetune_data_filename": "./datasets/fine-tune.smi",
+	"finetune_weight_filename": "./experiments/2018-04-26/LSTM_Chem/checkpoints/LSTM_Chem-22-0.42.hdf5",
+	"finetune_sample_num": 100
+
 }
