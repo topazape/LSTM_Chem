@@ -17,7 +17,7 @@ def main():
     finetuner.train()
 
     generator = LSTMChemGenerator(model, config)
-    sampled_smiles = generator.sample(num=100)
+    sampled_smiles = generator.sample(config.finetune_sample_num)
     return sampled_smiles
 
 if __name__ == '__main__':
