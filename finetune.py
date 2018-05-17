@@ -5,21 +5,23 @@ from generators.generator import LSTMChemGenerator
 from utils.config import process_config
 
 CONFIG_FILE = './configs/LSTMChem_config.json'
-WEIGHT_FILE = './path/to/weight_file.hdf5'
+WEIGHT_FILE = './experiments/2018-04-26/LSTM_Chem/checkpoints/LSTM_Chem-22-0.42.hdf5'
 def main():
     config = process_config(CONFIG_FILE)
     model = LSTMChem(config)
-    model.model.load_weights(WEIGHT_FILE)
+    model.model.load_weights(config.finetune_weight_filename)
 
     data_loader = FineTuneDataLoader(config)
 
     finetuner = LSTMChemFineTuner(model, data_loader.get_train_data(), config)
+    finetuner.train()
 
     generator = LSTMChemGenerator(model, config)
-    sampled_smiles = generator.sample(num=10)
+    sampled_smiles = generator.sample(num=100)
     return sampled_smiles
 
 if __name__ == '__main__':
     sampled_smiles = main()
-    for smiles in sampled_smiles:
-        print(smiles)
+    with open('TRPM8_agonists.smi', 'w') as f:
+        for smi in sampled_smiles:
+            f.write(smi + '\n')
