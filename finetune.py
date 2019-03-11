@@ -22,6 +22,6 @@ def main():
 
 if __name__ == '__main__':
     sampled_smiles = main()
-    with open('TRPM8_agonists.smi', 'w') as f:
+    with open('WantsChems.smi', 'w') as f:
         for smi in sampled_smiles:
             f.write(smi + '\n')
