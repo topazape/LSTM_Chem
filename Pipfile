@@ -10,11 +10,10 @@ jupyter = "*"
 yapf = "*"
 
 [packages]
-tensorflow = "==2.0.0"
-bunch = "*"
-sqlalchemy = "*"
 tqdm = "*"
 joblib = "*"
+bunch = "*"
+tensorflow = "*"
 
 [requires]
 python_version = "3.7"
