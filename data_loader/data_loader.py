@@ -9,7 +9,6 @@ class DataLoader(BaseDataLoader):
         super(DataLoader, self).__init__(config)
         self.X = []
         self.y = []
-#        self.config = config
         st = SmilesTokenizer()
         _, self.to_one_hot = st.one_hot_encode('G')
 
@@ -59,7 +58,7 @@ class DataLoader(BaseDataLoader):
             y = [self.to_one_hot[char] for char in atom[1:]]
             self.y.append(y)
 
-        self.X = np.array(self.X)
-        self.y = np.array(self.y)
+        self.X = np.array(self.X, dtype=np.float16)
+        self.y = np.array(self.y, dtype=np.float16)
         print('done.')
         return self.X, self.y

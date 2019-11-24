@@ -7,7 +7,7 @@
 	"optimizer": "adam",
 	"seed": 42,
 	"batch_size": 256,
-	"validation_split":0.1,
+	"validation_split": 0.1,
 	"verbose_training": true,
 	"sampling_temp": 0.75,
 
@@ -23,5 +23,4 @@
 	"finetune_data_filename": "./datasets/fine-tune.smi",
 	"finetune_weight_filename": "./experiments/2018-04-26/LSTM_Chem/checkpoints/LSTM_Chem-22-0.42.hdf5",
 	"finetune_sample_num": 100
-
 }

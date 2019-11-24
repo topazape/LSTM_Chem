@@ -15,5 +15,3 @@ class LSTMChemFineTuner(BaseTrain):
                 verbose=self.config.verbose_training,
                 batch_size=self.config.finetune_batch_size,
                 )
-#        self.loss.extend(history.history['loss'])
-#        self.val_loss.extend(history.history['val_loss'])

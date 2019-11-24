@@ -1,6 +1,6 @@
 import os
 from base.base_trainer import BaseTrain
-from keras.callbacks import ModelCheckpoint, TensorBoard
+from tensorflow.keras.callbacks import ModelCheckpoint, TensorBoard
 
 class LSTMChemTrainer(BaseTrain):
     def __init__(self, model, data, config):

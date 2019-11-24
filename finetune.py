@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 from models.model import LSTMChem
 from finetuners.finetuner import LSTMChemFineTuner
 from finetuners.data_loader import FineTuneDataLoader
@@ -5,6 +7,7 @@ from generators.generator import LSTMChemGenerator
 from utils.config import process_config
 
 CONFIG_FILE = './configs/LSTMChem_config.json'
+
 
 def main():
     config = process_config(CONFIG_FILE)
@@ -20,8 +23,9 @@ def main():
     sampled_smiles = generator.sample(config.finetune_sample_num)
     return sampled_smiles
 
+
 if __name__ == '__main__':
     sampled_smiles = main()
-    with open('WantsChems.smi', 'w') as f:
+    with open('TRPM8_agonists.smi', 'w') as f:
         for smi in sampled_smiles:
             f.write(smi + '\n')

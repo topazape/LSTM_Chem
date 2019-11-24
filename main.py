@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 from data_loader.data_loader import DataLoader
 from models.model import LSTMChem
 from trainers.trainer import LSTMChemTrainer
@@ -5,6 +7,7 @@ from utils.config import process_config
 from utils.dirs import create_dirs
 
 CONFIG_FILE = './configs/LSTMChem_config.json'
+
 
 def main():
     config = process_config(CONFIG_FILE)
@@ -19,10 +22,12 @@ def main():
     model = LSTMChem(config)
 
     print('Create the trainer')
-    trainer = LSTMChemTrainer(model.model, data_loader.get_train_data(), config)
+    trainer = LSTMChemTrainer(model.model, data_loader.get_train_data(),
+                              config)
 
     print('Start training the model.')
     trainer.train()
+
 
 if __name__ == '__main__':
     main()
