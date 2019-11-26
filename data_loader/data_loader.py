@@ -58,7 +58,7 @@ class DataLoader(BaseDataLoader):
             y = [self.to_one_hot[char] for char in atom[1:]]
             self.y.append(y)
 
-        self.X = np.array(self.X, dtype=np.float16)
-        self.y = np.array(self.y, dtype=np.float16)
+        self.X = np.array(self.X, dtype=np.float32)
+        self.y = np.array(self.y, dtype=np.float32)
         print('done.')
         return self.X, self.y
