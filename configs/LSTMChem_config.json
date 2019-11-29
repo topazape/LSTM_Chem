@@ -1,6 +1,6 @@
 {
 	"exp_name": "LSTM_Chem",
-	"data_filename": "./datasets/dataset.smi",
+	"data_filename": "./datasets/dataset_cleansed.smi",
 	"data_length": 0,
 	"units": 256,
 	"num_epochs": 22,
@@ -18,9 +18,9 @@
 	"checkpoint_verbose": true,
 	"tensorboard_write_graph": true,
 
-	"finetune_epochs": 10,
-	"finetune_batch_size": 16,
-	"finetune_data_filename": "./datasets/fine-tune.smi",
+	"finetune_epochs": 12,
+	"finetune_batch_size": 2,
+	"finetune_data_filename": "./datasets/TRPM8_inhibitors_for_fine-tune.smi",
 	"finetune_weight_filename": "./experiments/2018-04-26/LSTM_Chem/checkpoints/LSTM_Chem-22-0.42.hdf5",
 	"finetune_sample_num": 100
 }

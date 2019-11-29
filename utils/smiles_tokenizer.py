@@ -1,3 +1,4 @@
+import copy
 import numpy as np
 
 
@@ -26,6 +27,13 @@ class SmilesTokenizer(object):
         self.table = sorted(atoms, key=len, reverse=True) + special + padding
         self.table_len = len(self.table)
 
+        self.one_hot_dict = {}
+        for i, symbol in enumerate(self.table):
+            vec = np.zeros(self.table_len, dtype=np.float32)
+            vec[i] = 1
+            self.one_hot_dict[symbol] = vec
+
+
     def tokenize(self, smiles):
         N = len(smiles)
         i = 0
@@ -38,14 +46,3 @@ class SmilesTokenizer(object):
                     i += len(symbol)
                     break
         return token
-
-    def one_hot_encode(self, tokenized_smiles):
-        to_one_hot = {}
-        for i, symbol in enumerate(self.table):
-            v = np.zeros((self.table_len, ))
-            v[i] = 1
-            to_one_hot[symbol] = v
-
-        result = np.array([to_one_hot[s] for s in tokenized_smiles])
-        result = result.reshape(1, result.shape[0], result.shape[1])
-        return result, to_one_hot
