@@ -54,7 +54,7 @@ FC(F)(F)c1ccccc1-c1cc(C(F)(F)F)c2[nH]c(C3=NOC4(CCCCC4)C3)nc2c1
 $ sqlite3 chembl_25.db
 SQLite version 3.30.1 2019-10-10 20:19:45
 Enter ".help" for usage hints.
-sqlite> .output kown-TRPM8-inhibitors.smi
+sqlite> .output known-TRPM8-inhibitors.smi
 ```
 ```sql
 SELECT
