@@ -1,5 +1,7 @@
 # LSTM_Chem
 This is the implementation of the paper - [Generative Recurrent Networks for De Novo Drug Design](https://doi.org/10.1002/minf.201700111)
+## Usage
+
 ## Preparing Dataset
 Download SQLite dump for ChEMBL25 (ftp://ftp.ebi.ac.uk/pub/databases/chembl/ChEMBLdb/releases/chembl_25), which is 3.3 GB compressed, and 16 GB uncompressed.  
 Unpack it the usual way, cd into the directory, and open the database using sqlite console.
@@ -14,20 +16,32 @@ sqlite> .output dataset.smi
 SELECT
   DISTINCT canonical_smiles
 FROM
-  activities, assays, compound_structures
+  compound_structures
 WHERE
-  standard_type IN ("Kd", "Ki", "Kb", "IC50", "EC50")
-  AND standard_units = "nM"
-  AND standard_value < 1000 
-  AND standard_relation IN ("<", "<<", "<=", "=")
-  AND activities.assay_id = assays.assay_id
-  AND activities.molregno = compound_structures.molregno
-;
+  molregno IN (
+    SELECT
+      DISTINCT molregno
+    FROM
+      activities
+    WHERE
+      standard_type IN ("Kd", "Ki", "Kb", "IC50", "EC50")
+      AND standard_units = "nM"
+      AND standard_value < 1000
+      AND standard_relation IN ("<", "<<", "<=", "=")
+    INTERSECT
+    SELECT
+      molregno
+    FROM
+      molecule_dictionary
+    WHERE
+      molecule_type = "Small molecule"
+  );
+
 ```
-You can get 565924 SMILES.
+You can get 556134 SMILES.
 
 ### SMILES for fine-tuning
-The article shows 5 TRPM8 inhibitors for fine-tuning.
+The article shows 5 TRPM8 antagonists for fine-tuning.
 ```console
 Cc1cccc(COc2ccccc2C(=O)N(CCCN)Cc2cccs2)c1
 O=C(Nc1ccc(OC(F)(F)F)cc1)N1CCC2(CC1)CC(O)c1cccc(Cl)c1O2
@@ -46,30 +60,28 @@ sqlite> .output kown-TRPM8-inhibitors.smi
 SELECT
   DISTINCT canonical_smiles
 FROM
-  activities, compound_structures
+  activities,
+  compound_structures
 WHERE
-  assay_id IN
-    (
-      SELECT
-        assay_id
-      FROM
-	assays
-      WHERE
-	tid
-	IN
-	  (
-	    SELECT
-	      tid
-	    FROM
-	      target_dictionary
-	    WHERE
-	      pref_name = "Transient receptor potential cation channel subfamily M member 8"
-	  )
-    )
-    AND standard_type = "IC50"
-    AND standard_units = "nM"
-    AND standard_value < 1000
-    AND standard_relation IN ("<", "<<", "<=", "=")
-    AND activities.molregno = compound_structures.molregno
-;
+  assay_id IN (
+    SELECT
+      assay_id
+    FROM
+      assays
+    WHERE
+      tid IN (
+        SELECT
+          tid
+        FROM
+          target_dictionary
+        WHERE
+          pref_name = "Transient receptor potential cation channel subfamily M member 8"
+      )
+  )
+  AND standard_type = "IC50"
+  AND standard_units = "nM"
+  AND standard_value < 10000
+  AND standard_relation IN ("<", "<<", "<=", "=")
+  AND activities.molregno = compound_structures.molregno;
 ```
+You can get 494 known TRPM8 inhibitors.
