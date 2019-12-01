@@ -1,7 +1,7 @@
 # LSTM_Chem
-This is the implementation of the paper - [Generative Recurrent Networks for De Novo Drug Design.](https://doi.org/10.1002/minf.201700111)
+This is the implementation of the paper - [Generative Recurrent Networks for De Novo Drug Design](https://doi.org/10.1002/minf.201700111)
 ## Preparing Dataset
-Download SQLite [dump for ChEMBL25](ftp://ftp.ebi.ac.uk/pub/databases/chembl/ChEMBLdb/releases/chembl_25/), which is 3.3 GB compressed, and 16 GB uncompressed.  
+Download SQLite [dump for ChEMBL25](ftp://ftp.ebi.ac.uk/pub/databases/chembl/ChEMBLdb/releases/chembl_25), which is 3.3 GB compressed, and 16 GB uncompressed.  
 Unpack it the usual way, cd into the directory, and open the database using sqlite console.
 ```console
 $ sqlite3 chembl_25.db
