@@ -1,5 +1,6 @@
 import numpy as np
 from joblib import Parallel, delayed
+from tqdm import tqdm
 from tensorflow.keras.utils import Sequence
 from utils.smiles_tokenizer import SmilesTokenizer
 
@@ -7,39 +8,49 @@ from utils.smiles_tokenizer import SmilesTokenizer
 class DataLoader(Sequence):
     def __init__(self, config):
         self.config = config
-        self.X = []
-        self.y = []
-        self.max_len = 0
         self.st = SmilesTokenizer()
+        self.max_len = 0
+
+        self.smiles = self.load(length=self.config.data_length)
+        self.tokenized_smiles = np.array(self.tokenize(self.smiles))
+
         self.one_hot_dict = self.st.one_hot_dict
         self.tokenized_smiles = []
         self.padded_smiles = []
-
-    def get_train_data(self):
-        return self.load().clean().tokenize().padding().one_hot_encode()
 
     def load(self, length=0):
         length = self.config.data_length
         print('loading SMILES...')
         with open(self.config.data_filename) as f:
-            self.smiles = [s.rstrip() for s in f]
+            smiles = [s.rstrip() for s in f]
         if length != 0:
-            self.smiles = self.smiles[:length]
+            smiles = self.smiles[:length]
 
         print('done.')
-        return self
+        return smiles
 
-    def tokenize(self):
-        print('tokenizing SMILES...')
-        p = Parallel(n_jobs=-1)
-        self.tokenized_smiles = p(
-            [delayed(self.st.tokenize)(s) for s in self.smiles])
-        for tokenized_smi in self.tokenized_smiles:
-            length = len(tokenized_smi)
-            if self.max_len < length:
-                self.max_len = length
-        print('done')
-        return self
+    def tokenize(self, smiles):
+        tokenized_smiles = []
+        if isinstance(smiles, list):
+            print('tokenizing SMILES...')
+            tokenized_smiles.append([
+                np.array(self.st.tokenize(s)) for s in tqdm(smiles)
+            ])
+            for tokenized_smi in tokenized_smiles:
+                length = len(tokenized_smi)
+                if self.max_len < length:
+                    self.max_len = length
+            print('done.')
+        return tokenized_smiles
+
+    def __len__(self):
+        ret = int(
+            np.ceil(
+                len(self.tokenized_smiles) / float(self.config.batch_size)))
+        return ret
+
+    def __getitem__(self, idx):
+        return
 
     def _pad(self, tokenized_smi):
         return ['G'] + tokenized_smi + ['E'] + [
