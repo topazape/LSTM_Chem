@@ -4,7 +4,7 @@ This is the implementation of the paper - [Generative Recurrent Networks for De 
 
 ## Preparing Dataset
 Download SQLite dump for ChEMBL25 (ftp://ftp.ebi.ac.uk/pub/databases/chembl/ChEMBLdb/releases/chembl_25), which is 3.3 GB compressed, and 16 GB uncompressed.  
-Unpack it the usual way, cd into the directory, and open the database using sqlite console.
+Unpack it the usual way, `cd` into the directory, and open the database using sqlite console.
 ```console
 $ sqlite3 chembl_25.db
 SQLite version 3.30.1 2019-10-10 20:19:45
