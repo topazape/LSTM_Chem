@@ -1,11 +1,13 @@
 import os
-from base.base_trainer import BaseTrain
 from tensorflow.keras.callbacks import ModelCheckpoint, TensorBoard
 
 
-class LSTMChemTrainer(BaseTrain):
-    def __init__(self, model, data, config):
-        super(LSTMChemTrainer, self).__init__(model, data, config)
+class LSTMChemTrainer(object):
+    def __init__(self, model, train_data_loader, valid_data_loader, config):
+        self.model = model
+        self.config = config
+        self.train_data_loader = train_data_loader
+        self.valid_data_loader = valid_data_loader
         self.callbacks = []
         self.loss = []
         self.val_loss = []
@@ -31,14 +33,16 @@ class LSTMChemTrainer(BaseTrain):
             ))
 
     def train(self):
-        history = self.model.fit(
-            self.data[0],
-            self.data[1],
+        history = self.model.fit_generator(
+            self.train_data_loader,
+            steps_per_epoch=self.train_data_loader.__len__(),
             epochs=self.config.num_epochs,
             verbose=self.config.verbose_training,
-            batch_size=self.config.batch_size,
-            validation_split=self.config.validation_split,
-            callbacks=self.callbacks,
+            validation_data=self.valid_data_loader,
+            validation_steps=self.valid_data_loader.__len__(),
+            use_multiprocessing=True,
+            shuffle=False,
+            callbacks=self.callbacks
         )
         self.loss.extend(history.history['loss'])
         self.val_loss.extend(history.history['val_loss'])

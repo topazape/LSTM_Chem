@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+from copy import copy
 from data_loader.data_loader import DataLoader
 from models.model import LSTMChem
 from trainers.trainer import LSTMChemTrainer
@@ -16,14 +17,14 @@ def main():
     create_dirs([config.tensorboard_log_dir, config.checkpoint_dir])
 
     print('Create the data generator.')
-    data_loader = DataLoader(config)
+    train_dl = DataLoader(config, data_type='train')
+    valid_dl = copy(train_dl).data_type = 'valid'
 
     print('Create the model.')
     model = LSTMChem(config)
 
     print('Create the trainer')
-    trainer = LSTMChemTrainer(model.model, data_loader.get_train_data(),
-                              config)
+    trainer = LSTMChemTrainer(model.model, train_dl, valid_dl, config)
 
     print('Start training the model.')
     trainer.train()

@@ -5,15 +5,33 @@ from utils.smiles_tokenizer import SmilesTokenizer
 
 
 class DataLoader(Sequence):
-    def __init__(self, config):
+    def __init__(self, config, data_type='train'):
         self.config = config
-        self.st = SmilesTokenizer()
+        self.data_type = data_type
+        if self.data_type not in ['train', 'valid']:
+            raise NameError(f'data_type: \'{self.data_type}\' is not defined.')
+
         self.max_len = 0
-
         self.smiles = self._load(length=self.config.data_length)
-        self.tokenized_smiles = self._tokenize(self.smiles[:10])
 
+        self.st = SmilesTokenizer()
         self.one_hot_dict = self.st.one_hot_dict
+
+        self.tokenized_smiles = self._tokenize(self.smiles[:100000])
+
+    def _set_data(self, tokenized_smiles):
+        assert tokenized_smiles
+        idx = np.arange(len(tokenized_smiles))
+        valid_size = int(
+            np.ceil(len(tokenized_smiles) * self.config.validation_split))
+        np.random.seed(self.config.seed)
+        np.random.shuffle(idx)
+        if self.data_type == 'train':
+            ret = [tokenized_smiles[idx[i]] for i in idx[valid_size:]]
+            return ret
+        else:
+            ret = [tokenized_smiles[idx[i]] for i in idx[:valid_size]]
+            return ret
 
     def _load(self, length=0):
         length = self.config.data_length
@@ -26,31 +44,30 @@ class DataLoader(Sequence):
         return smiles
 
     def _tokenize(self, smiles):
-        if isinstance(smiles, list):
-            print('tokenizing SMILES...')
-            if self.config.verbose_training:
-                from tqdm import tqdm
-                tokenized_smiles = [
-                    self.st.tokenize(smi) for smi in tqdm(smiles)
-                ]
-            else:
-                tokenized_smiles = [self.st.tokenize(smi) for smi in smiles]
-            tokenized_smiles = tokenized_smiles
+        assert isinstance(smiles, list)
+        print('tokenizing SMILES...')
+        if self.config.verbose_training:
+            from tqdm import tqdm
+            tokenized_smiles = [self.st.tokenize(smi) for smi in tqdm(smiles)]
+        else:
+            tokenized_smiles = [self.st.tokenize(smi) for smi in smiles]
 
-            for tokenized_smi in tokenized_smiles:
-                length = len(tokenized_smi)
-                if self.max_len < length:
-                    self.max_len = length
-            print('done.')
+        for tokenized_smi in tokenized_smiles:
+            length = len(tokenized_smi)
+            if self.max_len < length:
+                self.max_len = length
+        print('done.')
         return tokenized_smiles
 
     def __len__(self):
+        self.tokenized_smiles = self._set_data(self.tokenized_smiles)
         ret = int(
             np.ceil(
                 len(self.tokenized_smiles) / float(self.config.batch_size)))
         return ret
 
     def __getitem__(self, idx):
+        self.tokenized_smiles = self._set_data(self.tokenized_smiles)
         data = self.tokenized_smiles[idx * self.config.batch_size:(idx + 1) *
                                      self.config.batch_size]
         data = self._padding(data)
@@ -72,7 +89,5 @@ class DataLoader(Sequence):
         ]
 
     def _padding(self, data):
-        print('padding SMILES...')
         padded_smiles = [self._pad(t_smi) for t_smi in data]
-        print('done.')
         return padded_smiles

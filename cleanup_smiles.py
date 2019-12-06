@@ -2,9 +2,11 @@
 
 import argparse
 import os
-from joblib import Parallel, delayed
-from rdkit import Chem
+from tqdm import tqdm
+from rdkit import Chem, RDLogger
 from rdkit.Chem import MolStandardize
+
+RDLogger.DisableLog('rdApp.*')
 
 class Preprocessor(object):
     def __init__(self):
@@ -35,9 +37,8 @@ def main(input_file, output_file):
     print(f'input SMILES num: {len(smiles)}')
     print('start to clean up')
 
-    p = Parallel(n_jobs=-1)
-    pp_smiles = p([delayed(pp.process)(smi) for smi in smiles])
-    cl_smiles = [s for s in pp_smiles if s]
+    pp_smiles = [pp.process(smi) for smi in tqdm(smiles)]
+    cl_smiles = list(set([s for s in pp_smiles if s]))
 
     print('done.')
     print(f'output SMILES num: {len(cl_smiles)}')
