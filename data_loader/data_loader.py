@@ -1,6 +1,5 @@
 import numpy as np
 from joblib import Parallel, delayed
-from tqdm import tqdm
 from tensorflow.keras.utils import Sequence
 from utils.smiles_tokenizer import SmilesTokenizer
 
@@ -11,31 +10,33 @@ class DataLoader(Sequence):
         self.st = SmilesTokenizer()
         self.max_len = 0
 
-        self.smiles = self.load(length=self.config.data_length)
-        self.tokenized_smiles = np.array(self.tokenize(self.smiles))
+        self.smiles = self._load(length=self.config.data_length)
+        self.tokenized_smiles = self._tokenize(self.smiles[:10])
 
         self.one_hot_dict = self.st.one_hot_dict
-        self.tokenized_smiles = []
-        self.padded_smiles = []
 
-    def load(self, length=0):
+    def _load(self, length=0):
         length = self.config.data_length
         print('loading SMILES...')
         with open(self.config.data_filename) as f:
             smiles = [s.rstrip() for s in f]
         if length != 0:
-            smiles = self.smiles[:length]
-
+            smiles = smiles[:length]
         print('done.')
         return smiles
 
-    def tokenize(self, smiles):
-        tokenized_smiles = []
+    def _tokenize(self, smiles):
         if isinstance(smiles, list):
             print('tokenizing SMILES...')
-            tokenized_smiles.append([
-                np.array(self.st.tokenize(s)) for s in tqdm(smiles)
-            ])
+            if self.config.verbose_training:
+                from tqdm import tqdm
+                tokenized_smiles = [
+                    self.st.tokenize(smi) for smi in tqdm(smiles)
+                ]
+            else:
+                tokenized_smiles = [self.st.tokenize(smi) for smi in smiles]
+            tokenized_smiles = tokenized_smiles
+
             for tokenized_smi in tokenized_smiles:
                 length = len(tokenized_smi)
                 if self.max_len < length:
@@ -50,31 +51,28 @@ class DataLoader(Sequence):
         return ret
 
     def __getitem__(self, idx):
-        return
+        data = self.tokenized_smiles[idx * self.config.batch_size:(idx + 1) *
+                                     self.config.batch_size]
+        data = self._padding(data)
+        self.X, self.y = [], []
+        for tp_smi in data:
+            X = [self.one_hot_dict[symbol] for symbol in tp_smi[:-1]]
+            self.X.append(X)
+            y = [self.one_hot_dict[symbol] for symbol in tp_smi[1:]]
+            self.y.append(y)
+
+        self.X = np.array(self.X, dtype=np.float32)
+        self.y = np.array(self.y, dtype=np.float32)
+
+        return (self.X, self.y)
 
     def _pad(self, tokenized_smi):
         return ['G'] + tokenized_smi + ['E'] + [
             'A' for _ in range(self.max_len - len(tokenized_smi))
         ]
 
-    def padding(self):
+    def _padding(self, data):
         print('padding SMILES...')
-        p = Parallel(n_jobs=-1)
-        self.padded_smiles = p(
-            [delayed(self._pad)(t_smi) for t_smi in self.tokenized_smiles])
+        padded_smiles = [self._pad(t_smi) for t_smi in data]
         print('done.')
-        return self
-
-    def one_hot_encode(self):
-        print('one hot encoding...')
-        for atom in tqdm(self.smiles):
-            x = [self.to_one_hot[char] for char in atom[:-1]]
-            self.X.append(x)
-
-            y = [self.to_one_hot[char] for char in atom[1:]]
-            self.y.append(y)
-
-        self.X = np.array(self.X, dtype=np.float32)
-        self.y = np.array(self.y, dtype=np.float32)
-        print('done.')
-        return self.X, self.y
+        return padded_smiles
