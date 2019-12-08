@@ -1,5 +1,4 @@
 import numpy as np
-from joblib import Parallel, delayed
 from tensorflow.keras.utils import Sequence
 from utils.smiles_tokenizer import SmilesTokenizer
 
@@ -17,20 +16,26 @@ class DataLoader(Sequence):
         self.st = SmilesTokenizer()
         self.one_hot_dict = self.st.one_hot_dict
 
-        self.tokenized_smiles = self._tokenize(self.smiles[:100000])
+        self.tokenized_smiles = self._tokenize(self.smiles)
 
-    def _set_data(self, tokenized_smiles):
-        assert tokenized_smiles
-        idx = np.arange(len(tokenized_smiles))
-        valid_size = int(
-            np.ceil(len(tokenized_smiles) * self.config.validation_split))
+        self.idx = np.arange(len(self.tokenized_smiles))
+        self.valid_size = int(
+            np.ceil(len(self.tokenized_smiles) * self.config.validation_split))
         np.random.seed(self.config.seed)
-        np.random.shuffle(idx)
+        np.random.shuffle(self.idx)
+
+    def _set_data(self):
         if self.data_type == 'train':
-            ret = [tokenized_smiles[idx[i]] for i in idx[valid_size:]]
+            ret = [
+                self.tokenized_smiles[self.idx[i]]
+                for i in self.idx[self.valid_size:]
+            ]
             return ret
         else:
-            ret = [tokenized_smiles[idx[i]] for i in idx[:valid_size]]
+            ret = [
+                self.tokenized_smiles[self.idx[i]]
+                for i in self.idx[:self.valid_size]
+            ]
             return ret
 
     def _load(self, length=0):
@@ -60,16 +65,16 @@ class DataLoader(Sequence):
         return tokenized_smiles
 
     def __len__(self):
-        self.tokenized_smiles = self._set_data(self.tokenized_smiles)
+        target_tokenized_smiles = self._set_data()
         ret = int(
             np.ceil(
-                len(self.tokenized_smiles) / float(self.config.batch_size)))
+                len(target_tokenized_smiles) / float(self.config.batch_size)))
         return ret
 
     def __getitem__(self, idx):
-        self.tokenized_smiles = self._set_data(self.tokenized_smiles)
-        data = self.tokenized_smiles[idx * self.config.batch_size:(idx + 1) *
-                                     self.config.batch_size]
+        target_tokenized_smiles = self._set_data()
+        data = target_tokenized_smiles[idx * self.config.batch_size:(idx + 1) *
+                                       self.config.batch_size]
         data = self._padding(data)
         self.X, self.y = [], []
         for tp_smi in data:
@@ -81,7 +86,7 @@ class DataLoader(Sequence):
         self.X = np.array(self.X, dtype=np.float32)
         self.y = np.array(self.y, dtype=np.float32)
 
-        return (self.X, self.y)
+        return self.X, self.y
 
     def _pad(self, tokenized_smi):
         return ['G'] + tokenized_smi + ['E'] + [

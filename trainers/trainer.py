@@ -40,7 +40,7 @@ class LSTMChemTrainer(object):
             verbose=self.config.verbose_training,
             validation_data=self.valid_data_loader,
             validation_steps=self.valid_data_loader.__len__(),
-            use_multiprocessing=True,
+            use_multiprocessing=False,
             shuffle=False,
             callbacks=self.callbacks
         )

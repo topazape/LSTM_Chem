@@ -1,7 +1,7 @@
 {
 	"exp_name": "LSTM_Chem",
 	"data_filename": "./datasets/dataset_cleansed.smi",
-	"data_length": 0,
+	"data_length": 10000,
 	"units": 256,
 	"num_epochs": 22,
 	"optimizer": "adam",

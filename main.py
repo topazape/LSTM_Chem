@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 from copy import copy
+import tensorflow as tf
 from data_loader.data_loader import DataLoader
 from models.model import LSTMChem
 from trainers.trainer import LSTMChemTrainer
@@ -18,7 +19,8 @@ def main():
 
     print('Create the data generator.')
     train_dl = DataLoader(config, data_type='train')
-    valid_dl = copy(train_dl).data_type = 'valid'
+    valid_dl = copy(train_dl)
+    valid_dl.data_type = 'valid'
 
     print('Create the model.')
     model = LSTMChem(config)
