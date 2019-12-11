@@ -12,7 +12,7 @@ yapf = "*"
 [packages]
 tqdm = "*"
 bunch = "*"
-tensorflow = "==2.1.0rc0"
+tensorflow-gpu = "==2.0.0"
 
 [requires]
 python_version = "3.7"

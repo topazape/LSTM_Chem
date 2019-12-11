@@ -7,7 +7,7 @@ class DataLoader(Sequence):
     def __init__(self, config, data_type='train'):
         self.config = config
         self.data_type = data_type
-        if self.data_type not in ['train', 'valid']:
+        if self.data_type not in ['train', 'valid', 'finetune']:
             raise NameError(f'data_type: \'{self.data_type}\' is not defined.')
 
         self.max_len = 0
@@ -18,11 +18,12 @@ class DataLoader(Sequence):
 
         self.tokenized_smiles = self._tokenize(self.smiles)
 
-        self.idx = np.arange(len(self.tokenized_smiles))
-        self.valid_size = int(
-            np.ceil(len(self.tokenized_smiles) * self.config.validation_split))
-        np.random.seed(self.config.seed)
-        np.random.shuffle(self.idx)
+        if self.data_type in ['train', 'valid']:
+            self.idx = np.arange(len(self.tokenized_smiles))
+            self.valid_size = int(
+                np.ceil(len(self.tokenized_smiles) * self.config.validation_split))
+            np.random.seed(self.config.seed)
+            np.random.shuffle(self.idx)
 
     def _set_data(self):
         if self.data_type == 'train':
@@ -30,13 +31,14 @@ class DataLoader(Sequence):
                 self.tokenized_smiles[self.idx[i]]
                 for i in self.idx[self.valid_size:]
             ]
-            return ret
-        else:
+        elif self.data_type == 'valid':
             ret = [
                 self.tokenized_smiles[self.idx[i]]
                 for i in self.idx[:self.valid_size]
             ]
-            return ret
+        else:
+            ret = self.tokenized_smiles
+        return ret
 
     def _load(self, length=0):
         length = self.config.data_length

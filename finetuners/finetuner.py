@@ -1,9 +1,11 @@
 import os
 from base.base_trainer import BaseTrain
 
-class LSTMChemFineTuner(BaseTrain):
-    def __init__(self, model, data, config):
-        super(LSTMChemFineTuner, self).__init__(model, data, config)
+class LSTMChemFineTuner(object):
+    def __init__(self, model, data_loader, config):
+        self.model = model
+        self.data_loder = data_loader
+        self.config = config
         self.callbacks = []
         self.loss = []
         self.val_loss = []
