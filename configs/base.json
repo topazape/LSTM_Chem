@@ -22,6 +22,6 @@
 
 	"finetune_epochs": 12,
 	"finetune_batch_size": 1,
-	"finetune_data_filename": "./datasets/known_TRPM8-inhibitors_cleansed.smi",
+	"finetune_data_filename": "./datasets/TRPM8_inhibitors_for_fine-tune.smi",
 	"finetune_sample_num": 100
 }
