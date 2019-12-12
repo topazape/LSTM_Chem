@@ -4,12 +4,14 @@ This is the implementation of the paper - [Generative Recurrent Networks for De 
 I re-implimented the code that uses tensorflow 2.0. And I changed the data loader implementation to use generator to reduce memory.
 ## Requirements
 This model is built using Python 3.7.5, and utilizes the following packages;
+
 * numpy 1.17.4
 * tensorflow-gpu 2.0.0
 * tqdm 4.40.2
 * Bunch 1.0.1
 * matplotlib 3.1.2
 * RDKit 2019.03.4
+
 I strongly recommend using the GPU version of tensorflow. Learning this model with all the data is very slow in CPU mode (about 9 hrs/ epoch !). Since tensorflow 2.0.0 depends on CUDA 10.0, be careful that your environment accepts the correct version.  
 RDKit and matplotlib are used for SMILES cleanup, validation, and visualization of molecules and their properties. To install RDKit, I strongly recommend using Anaconda ([See this document](https://www.rdkit.org/docs/Install.html)). Building RDKit from source is very hard.
 ## Usage
@@ -20,9 +22,9 @@ $ python main.py
 ```
 After training, `experiments/{exp_name}/{YYYY-mm-dd}/config.json` is generated. It's a copy of `configs/base.json` with additional settings for internal varibale. Since it is used for generation, please do not remove.
 ### Generation
-See `Randomly_generate_SMILES.ipynb`
+See `Randomly_generate_SMILES.ipynb`.
 ### fine-tuning
-See `fine-tuning_for_TRPM8.ipynb`
+See `fine-tuning_for_TRPM8.ipynb`.
 
 ## Detail
 ### Configuration
