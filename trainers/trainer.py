@@ -1,10 +1,11 @@
+from glob import glob
 import os
 from tensorflow.keras.callbacks import ModelCheckpoint, TensorBoard
 
 
 class LSTMChemTrainer(object):
-    def __init__(self, model, train_data_loader, valid_data_loader, config):
-        self.model = model
+    def __init__(self, modeler, train_data_loader, valid_data_loader, config):
+        self.model = modeler.model
         self.config = config
         self.train_data_loader = train_data_loader
         self.valid_data_loader = valid_data_loader
@@ -42,7 +43,17 @@ class LSTMChemTrainer(object):
             validation_steps=self.valid_data_loader.__len__(),
             use_multiprocessing=True,
             shuffle=False,
-            callbacks=self.callbacks
-        )
+            callbacks=self.callbacks)
         self.loss.extend(history.history['loss'])
         self.val_loss.extend(history.history['val_loss'])
+
+        last_weight_file = glob(
+            os.path.join(
+                f'{self.config.checkpoint_dir}',
+                f'{self.config.exp_name}-{self.config.num_epochs:02}*.hdf5'))[0]
+
+        assert os.path.exists(last_weight_file)
+        self.config.model_weight_filename = last_weight_file
+
+        with open(os.path.join(self.config.exp_dir, 'config.json'), 'w') as f:
+            f.write(self.config.toJSON(indent=2))

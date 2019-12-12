@@ -1,3 +1,5 @@
+import json
+import os
 import numpy as np
 from tensorflow.keras.utils import Sequence
 from utils.smiles_tokenizer import SmilesTokenizer
@@ -7,11 +9,16 @@ class DataLoader(Sequence):
     def __init__(self, config, data_type='train'):
         self.config = config
         self.data_type = data_type
-        if self.data_type not in ['train', 'valid', 'finetune']:
-            raise NameError(f'data_type: \'{self.data_type}\' is not defined.')
+        assert self.data_type in ['train', 'valid', 'finetune']
 
         self.max_len = 0
-        self.smiles = self._load(length=self.config.data_length)
+
+        if self.data_type == 'train':
+            self.smiles = self._load(self.config.data_filename)
+        elif self.data_type == 'finetune':
+            self.smiles = self._load(self.config.finetune_data_filename)
+        else:
+            pass
 
         self.st = SmilesTokenizer()
         self.one_hot_dict = self.st.one_hot_dict
@@ -21,7 +28,8 @@ class DataLoader(Sequence):
         if self.data_type in ['train', 'valid']:
             self.idx = np.arange(len(self.tokenized_smiles))
             self.valid_size = int(
-                np.ceil(len(self.tokenized_smiles) * self.config.validation_split))
+                np.ceil(
+                    len(self.tokenized_smiles) * self.config.validation_split))
             np.random.seed(self.config.seed)
             np.random.shuffle(self.idx)
 
@@ -40,7 +48,7 @@ class DataLoader(Sequence):
             ret = self.tokenized_smiles
         return ret
 
-    def _load(self, length=0):
+    def _load(self, data_filename):
         length = self.config.data_length
         print('loading SMILES...')
         with open(self.config.data_filename) as f:
@@ -59,18 +67,27 @@ class DataLoader(Sequence):
         else:
             tokenized_smiles = [self.st.tokenize(smi) for smi in smiles]
 
-        for tokenized_smi in tokenized_smiles:
-            length = len(tokenized_smi)
-            if self.max_len < length:
-                self.max_len = length
+        if self.data_type == 'train':
+            for tokenized_smi in tokenized_smiles:
+                length = len(tokenized_smi)
+                if self.max_len < length:
+                    self.max_len = length
+            self.config.train_smi_max_len = self.max_len
         print('done.')
         return tokenized_smiles
 
     def __len__(self):
         target_tokenized_smiles = self._set_data()
-        ret = int(
-            np.ceil(
-                len(target_tokenized_smiles) / float(self.config.batch_size)))
+        if self.data_type in ['train', 'valid']:
+            ret = int(
+                np.ceil(
+                    len(target_tokenized_smiles) /
+                    float(self.config.batch_size)))
+        else:
+            ret = int(
+                np.ceil(
+                    len(target_tokenized_smiles) /
+                    float(self.config.finetune_batch_size)))
         return ret
 
     def __getitem__(self, idx):

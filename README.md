@@ -1,17 +1,68 @@
 # LSTM_Chem
 This is the implementation of the paper - [Generative Recurrent Networks for De Novo Drug Design](https://doi.org/10.1002/minf.201700111)
+## Update (2019/12/12)
+I re-implimented the code that uses tensorflow 2.0. And I changed the data loader implementation to use generator to reduce memory.
+## Requirements
+This model is built using Python 3.7.5, and utilizes the following packages;
+* numpy 1.17.4
+* tensorflow-gpu 2.0.0
+* tqdm 4.40.2
+* Bunch 1.0.1
+* matplotlib 3.1.2
+* RDKit 2019.03.4
+I strongly recommend using the GPU version of tensorflow. Learning this model with all the data is very slow in CPU mode (about 9 hrs/ epoch !). Since tensorflow 2.0.0 depends on CUDA 10.0, be careful that your environment accepts the correct version.  
+RDKit and matplotlib are used for SMILES cleanup, validation, and visualization of molecules and their properties. To install RDKit, I strongly recommend using Anaconda ([See this document](https://www.rdkit.org/docs/Install.html)). Building RDKit from source is very hard.
 ## Usage
+### Training
+Just run below. However, all data is used according to the default settings. So please be careful, it will take a long time.
+```console
+$ python main.py
+```
+After training, `experiments/{exp_name}/{YYYY-mm-dd}/config.json` is generated. It's a copy of `configs/base.json` with additional settings for internal varibale. Since it is used for generation, please do not remove.
+### Generation
+See `Randomly_generate_SMILES.ipynb`
+### fine-tuning
+See `fine-tuning_for_TRPM8.ipynb`
 
-## Preparing Dataset
-Download SQLite dump for ChEMBL25 (ftp://ftp.ebi.ac.uk/pub/databases/chembl/ChEMBLdb/releases/chembl_25), which is 3.3 GB compressed, and 16 GB uncompressed.  
+## Detail
+### Configuration
+See `configs/base.json`. If you want to change, please edit this file.
+| parameters | meaning |
+----|----
+| exp_name | experiment name (default: `LSTM_Chem`) |
+| data_filename | filepath for training the model (SMILES file) |
+| data_length | number of SMILES for training. If you set 0, all the data is used (default: `0`) |
+| units | size of hidden state vector of two LSTM layers (default: `256`) |
+| num_epochs | number of epochs (default: `22`, see the paper) |
+| optimizer | optimizer (default: `adam`) |
+| seed | random seed (default: `42`) |
+| batch_size | batch size (default: `512`) |
+| validation_split | split ratio for validation (default: `0.25`) |
+| varbose training | verbosity mode (default: `True`) |
+| checkpoint_monitor | quantity to monitor (default: `val_loss`) |
+| checkpoint_mode | one of {`auto`, `min`, `max`} (default: `min`) |
+| checkpoint_save_best_only | the latest best model according to the quantity monitored will not be overwritten (default: `True`)|
+| checkpoint_save_weights_only | If True, then only the model's weights will be saved (default: `True` |
+| checkpoint_verbose | verbosity mode while `ModelCheckpoint` (default: `1`) |
+| tensorboard_write_graph | whether to visualize the graph in TensorBoard (defalut: `True`) |
+| sampling_temp | sampling temperature (default: `0.75`, see the paper) |
+| smiles_max_length | maximum size of generated SMILES (default: `128`)|
+| finetune_epochs | epochs for fine-tuning (default: `12`, see the paper) |
+| finetune_batch_size | batch size of finetune (default: `1`) |
+| finetune_filename | filepath for fine-tune the model (SMILES) |
+| finetune_sample_num | number of sampling SMILES (default: `100`) |
+### Preparing Dataset
+#### Get database from ChEMBL
+Download SQLite dump for ChEMBL25 (ftp://ftp.ebi.ac.uk/pub/databases/chembl/ChEMBLdb/latest/chembl_25_sqlite.tar.gz), which is 3.3 GB compressed, and 16 GB uncompressed.  
 Unpack it the usual way, `cd` into the directory, and open the database using sqlite console.
+#### Extract SMILES for training
 ```console
 $ sqlite3 chembl_25.db
 SQLite version 3.30.1 2019-10-10 20:19:45
 Enter ".help" for usage hints.
 sqlite> .output dataset.smi
 ```
-### Extract SMILES for training
+You can get SMILES that annotated nM activities according to the following SQL query.
 ```sql
 SELECT
   DISTINCT canonical_smiles
@@ -38,14 +89,13 @@ WHERE
   );
 
 ```
-You can get 556134 SMILES.  
-According to the paper, the dataset was preprocessed and duplicates, salts, and stereochemical information were removed. So I made SMILES clean up script. Run the following to get cleansed SMILES. It takes about 10 miniutes or more. Please wait.
+You can get 556134 SMILES in `dataset.smi`. According to the paper, the dataset was preprocessed and duplicates, salts, and stereochemical information were removed. So I made SMILES clean up script. Run the following to get cleansed SMILES. It takes about 10 miniutes or more. Please wait.
 ```console
 $ python cleanup_smiles.py datasets/dataset.smi datasets/dataset_cleansed.smi
 ```
 You can get 524812 SMILES. This dataset is used for training.
-### SMILES for fine-tuning
-The article shows 5 TRPM8 antagonists for fine-tuning.
+#### SMILES for fine-tuning
+The paper shows 5 TRPM8 antagonists for fine-tuning.
 ```console
 FC(F)(F)c1ccccc1-c1cc(C(F)(F)F)c2[nH]c(C3=NOC4(CCCCC4)C3)nc2c1
 O=C(Nc1ccc(OC(F)(F)F)cc1)N1CCC2(CC1)CC(O)c1cccc(Cl)c1O2
@@ -53,13 +103,15 @@ O=C(O)c1ccc(S(=O)(=O)N(Cc2ccc(C(F)(F)C3CC3)c(F)c2)c2ncc3ccccc3c2C2CC2)cc1
 Cc1cccc(COc2ccccc2C(=O)N(CCCN)Cc2cccs2)c1
 CC(c1ccc(F)cc1F)N(Cc1cccc(C(=O)O)c1)C(=O)c1cc2ccccc2cn1
 ```
-#### Extract TRPM8 inhibitors
+#### Extract known TRPM8 inhibitors from ChEMBL25
+Open the database using sqlite console.
 ```console
 $ sqlite3 chembl_25.db
 SQLite version 3.30.1 2019-10-10 20:19:45
 Enter ".help" for usage hints.
 sqlite> .output known-TRPM8-inhibitors.smi
 ```
+Then issue the following SQL query. I set maximum IC50 activity to 10 uM.
 ```sql
 SELECT
   DISTINCT canonical_smiles

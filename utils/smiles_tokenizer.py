@@ -59,6 +59,8 @@ class SmilesTokenizer(object):
         return token
 
     def one_hot_encode(self, tokenized_smiles):
-        result = np.array([self.one_hot_dict[symbol] for symbol in tokenized_smiles])
-        result.reshape(1, result.shape[0], result.shape[1])
+        result = np.array(
+            [self.one_hot_dict[symbol] for symbol in tokenized_smiles],
+            dtype=np.float32)
+        result = result.reshape(1, result.shape[0], result.shape[1])
         return result

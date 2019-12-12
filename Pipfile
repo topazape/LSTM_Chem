@@ -8,6 +8,8 @@ pynvim = "*"
 python-language-server = "*"
 jupyter = "*"
 yapf = "*"
+matplotlib = "*"
+pillow = "*"
 
 [packages]
 tqdm = "*"
