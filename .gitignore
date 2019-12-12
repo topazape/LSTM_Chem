@@ -102,3 +102,6 @@ ENV/
 
 # local
 RDKit/
+.envrc
+Pipfile
+Pipfile.lock
