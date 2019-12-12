@@ -27,8 +27,9 @@ See `fine-tuning_for_TRPM8.ipynb`
 ## Detail
 ### Configuration
 See `configs/base.json`. If you want to change, please edit this file.
+
 | parameters | meaning |
-----|----
+| ---- | ---- |
 | exp_name | experiment name (default: `LSTM_Chem`) |
 | data_filename | filepath for training the model (SMILES file) |
 | data_length | number of SMILES for training. If you set 0, all the data is used (default: `0`) |
