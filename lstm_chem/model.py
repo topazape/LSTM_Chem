@@ -3,7 +3,7 @@ import time
 from tensorflow.keras import Sequential
 from tensorflow.keras.layers import LSTM, Dense
 from tensorflow.keras.initializers import RandomNormal
-from utils.smiles_tokenizer import SmilesTokenizer
+from lstm_chem.utils.smiles_tokenizer import SmilesTokenizer
 
 
 class LSTMChem(object):

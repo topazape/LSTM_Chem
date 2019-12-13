@@ -2,7 +2,7 @@ import json
 import os
 import numpy as np
 from tensorflow.keras.utils import Sequence
-from utils.smiles_tokenizer import SmilesTokenizer
+from lstm_chem.utils.smiles_tokenizer import SmilesTokenizer
 
 
 class DataLoader(Sequence):

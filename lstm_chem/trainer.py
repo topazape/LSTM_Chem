@@ -42,7 +42,7 @@ class LSTMChemTrainer(object):
             validation_data=self.valid_data_loader,
             validation_steps=self.valid_data_loader.__len__(),
             use_multiprocessing=True,
-            shuffle=False,
+            shuffle=True,
             callbacks=self.callbacks)
         self.loss.extend(history.history['loss'])
         self.val_loss.extend(history.history['val_loss'])

@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
 
 from copy import copy
-from utils.config import process_config
-from utils.dirs import create_dirs
-from data_loader.data_loader import DataLoader
-from models.model import LSTMChem
-from trainers.trainer import LSTMChemTrainer
+from lstm_chem.utils.config import process_config
+from lstm_chem.utils.dirs import create_dirs
+from lstm_chem.data_loader import DataLoader
+from lstm_chem.model import LSTMChem
+from lstm_chem.trainer import LSTMChemTrainer
 
-CONFIG_FILE = './configs/base.json'
+CONFIG_FILE = 'base_config.json'
 
 
 def main():

@@ -1,7 +1,10 @@
 # LSTM_Chem
 This is the implementation of the paper - [Generative Recurrent Networks for De Novo Drug Design](https://doi.org/10.1002/minf.201700111)
-## Update (2019/12/12)
-I re-implimented the code that uses tensorflow 2.0. And I changed the data loader implementation to use generator to reduce memory. Also, removed some atoms and symbols.
+## Update (2019/12/16)
+* re-implimented all the code using tensorflow 2.0 (tf.keras)
+* changed data_loader implementation to reduce memory usage using generator
+* removed some unused atoms and symbols
+* changed directory layout
 ## Requirements
 This model is built using Python 3.7.5, and utilizes the following packages;
 
@@ -16,26 +19,26 @@ I strongly recommend using the GPU version of tensorflow. Learning this model wi
 RDKit and matplotlib are used for SMILES cleanup, validation, and visualization of molecules and their properties. To install RDKit, I strongly recommend using Anaconda (See [this document](https://www.rdkit.org/docs/Install.html)). Building RDKit from source is very hard.
 ## Usage
 ### Training
-Just run below. However, all data is used according to the default setting. So please be careful, it will take a long time.
+Just run below. However, all the data is used according to the default setting. So please be careful, it will take a very long time.
 ```console
 $ python main.py
 ```
-After training, `experiments/{exp_name}/{YYYY-mm-dd}/config.json` is generated. It's a copy of `configs/base.json` with additional settings for internal varibale. Since it is used for generation, please do not remove.
+After training, `experiments/{exp_name}/{YYYY-mm-dd}/config.json` is generated. It's a copy of `base_config.json` with additional settings for internal varibale. Since it is used for generation, do not edit or remove.
 ### Generation
-See `Randomly_generate_SMILES.ipynb`.
+See `examples/Randomly_generate_SMILES.ipynb`.
 ### fine-tuning
-See `Fine-tuning_for_TRPM8.ipynb`.
+See `examples/Fine-tuning_for_TRPM8.ipynb`.
 
 ## Detail
 ### Configuration
-See `configs/base.json`. If you want to change, please edit this file.
+See `base_config.json`. If you want to change, please edit this file.
 
 | parameters | meaning |
 | ---- | ---- |
 | exp_name | experiment name (default: `LSTM_Chem`) |
-| data_filename | filepath for training the model (`SMILES file`) |
+| data_filename | filepath for training the model (`SMILES file with newline as delimiter`) |
 | data_length | number of SMILES for training. If you set 0, all the data is used (default: `0`) |
-| units | size of hidden state vector of two LSTM layers (default: `256`) |
+| units | size of hidden state vector of two LSTM layers (default: `256`, see the paper) |
 | num_epochs | number of epochs (default: `22`, see the paper) |
 | optimizer | optimizer (default: `adam`) |
 | seed | random seed (default: `42`) |
@@ -44,15 +47,15 @@ See `configs/base.json`. If you want to change, please edit this file.
 | varbose training | verbosity mode (default: `True`) |
 | checkpoint_monitor | quantity to monitor (default: `val_loss`) |
 | checkpoint_mode | one of {`auto`, `min`, `max`} (default: `min`) |
-| checkpoint_save_best_only | the latest best model according to the quantity monitored will not be overwritten (default: `True`)|
+| checkpoint_save_best_only | the latest best model according to the quantity monitored will not be overwritten (default: `False`)|
 | checkpoint_save_weights_only | If True, then only the model's weights will be saved (default: `True` |
 | checkpoint_verbose | verbosity mode while `ModelCheckpoint` (default: `1`) |
 | tensorboard_write_graph | whether to visualize the graph in TensorBoard (defalut: `True`) |
 | sampling_temp | sampling temperature (default: `0.75`, see the paper) |
-| smiles_max_length | maximum size of generated SMILES (default: `128`)|
+| smiles_max_length | maximum size of generated SMILES (default: `2048`)|
 | finetune_epochs | epochs for fine-tuning (default: `12`, see the paper) |
 | finetune_batch_size | batch size of finetune (default: `1`) |
-| finetune_filename | filepath for fine-tune the model (`SMILES file`) |
+| finetune_filename | filepath for fine-tune the model (`SMILES file with newline as delimiter`) |
 | finetune_sample_num | number of sampling SMILES (default: `100`, see the paper) |
 ### Preparing Dataset
 #### Get database from ChEMBL
@@ -106,6 +109,7 @@ O=C(O)c1ccc(S(=O)(=O)N(Cc2ccc(C(F)(F)C3CC3)c(F)c2)c2ncc3ccccc3c2C2CC2)cc1
 Cc1cccc(COc2ccccc2C(=O)N(CCCN)Cc2cccs2)c1
 CC(c1ccc(F)cc1F)N(Cc1cccc(C(=O)O)c1)C(=O)c1cc2ccccc2cn1
 ```
+You can see this in `datasets/TRPM8_inhibitors_for_fine-tune.smi`.
 #### Extract known TRPM8 inhibitors from ChEMBL25
 Open the database using sqlite console.
 ```console
