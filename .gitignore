@@ -101,6 +101,7 @@ ENV/
 .mypy_cache/
 
 # local
+experiments/
 RDKit/
 .envrc
 Pipfile

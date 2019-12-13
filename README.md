@@ -1,8 +1,8 @@
 # LSTM_Chem
 This is the implementation of the paper - [Generative Recurrent Networks for De Novo Drug Design](https://doi.org/10.1002/minf.201700111)
 ## Update (2019/12/16)
-* Re-implimented all the code using tensorflow 2.0 (tf.keras)
-* Changed data_loader implementation to reduce memory usage using generator
+* Reimplimented all code to use tensorflow 2.0.0 (tf.keras)
+* Changed data_loader to use generator to reduce memory usage
 * Removed some unused atoms and symbols
 * Changed directory layout
 ## Requirements
@@ -44,7 +44,7 @@ See `base_config.json`. If you want to change, please edit this file.
 | seed | random seed (default: `42`) |
 | batch_size | batch size (default: `512`) |
 | validation_split | split ratio for validation (default: `0.25`) |
-| varbose training | verbosity mode (default: `True`) |
+| varbose_training | verbosity mode (default: `True`) |
 | checkpoint_monitor | quantity to monitor (default: `val_loss`) |
 | checkpoint_mode | one of {`auto`, `min`, `max`} (default: `min`) |
 | checkpoint_save_best_only | the latest best model according to the quantity monitored will not be overwritten (default: `False`)|
