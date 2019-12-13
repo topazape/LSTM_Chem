@@ -3,7 +3,7 @@ This is the implementation of the paper - [Generative Recurrent Networks for De 
 ## Update (2019/12/16)
 * Re-implimented all the code using tensorflow 2.0 (tf.keras)
 * Changed data_loader implementation to reduce memory usage using generator
-* Uemoved some unused atoms and symbols
+* Removed some unused atoms and symbols
 * Changed directory layout
 ## Requirements
 This model is built using Python 3.7.5, and utilizes the following packages;
