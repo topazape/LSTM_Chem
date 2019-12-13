@@ -1,10 +1,10 @@
 # LSTM_Chem
 This is the implementation of the paper - [Generative Recurrent Networks for De Novo Drug Design](https://doi.org/10.1002/minf.201700111)
 ## Update (2019/12/16)
-* re-implimented all the code using tensorflow 2.0 (tf.keras)
-* changed data_loader implementation to reduce memory usage using generator
-* removed some unused atoms and symbols
-* changed directory layout
+* Re-implimented all the code using tensorflow 2.0 (tf.keras)
+* Changed data_loader implementation to reduce memory usage using generator
+* Uemoved some unused atoms and symbols
+* Changed directory layout
 ## Requirements
 This model is built using Python 3.7.5, and utilizes the following packages;
 
