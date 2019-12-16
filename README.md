@@ -48,7 +48,7 @@ See `base_config.json`. If you want to change, please edit this file.
 | checkpoint_monitor | quantity to monitor (default: `val_loss`) |
 | checkpoint_mode | one of {`auto`, `min`, `max`} (default: `min`) |
 | checkpoint_save_best_only | the latest best model according to the quantity monitored will not be overwritten (default: `False`)|
-| checkpoint_save_weights_only | If True, then only the model's weights will be saved (default: `True` |
+| checkpoint_save_weights_only | If True, then only the model's weights will be saved (default: `True`)|
 | checkpoint_verbose | verbosity mode while `ModelCheckpoint` (default: `1`) |
 | tensorboard_write_graph | whether to visualize the graph in TensorBoard (defalut: `True`) |
 | sampling_temp | sampling temperature (default: `0.75`, see the paper) |
