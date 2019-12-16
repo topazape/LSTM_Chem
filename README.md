@@ -52,7 +52,7 @@ See `base_config.json`. If you want to change, please edit this file.
 | checkpoint_verbose | verbosity mode while `ModelCheckpoint` (default: `1`) |
 | tensorboard_write_graph | whether to visualize the graph in TensorBoard (defalut: `True`) |
 | sampling_temp | sampling temperature (default: `0.75`, see the paper) |
-| smiles_max_length | maximum size of generated SMILES (default: `128`)|
+| smiles_max_length | maximum size of generated SMILES (default: `1024`)|
 | finetune_epochs | epochs for fine-tuning (default: `12`, see the paper) |
 | finetune_batch_size | batch size of finetune (default: `1`) |
 | finetune_filename | filepath for fine-tune the model (`SMILES file with newline as delimiter`) |
