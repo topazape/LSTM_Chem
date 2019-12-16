@@ -10,8 +10,6 @@ class LSTMChemTrainer(object):
         self.train_data_loader = train_data_loader
         self.valid_data_loader = valid_data_loader
         self.callbacks = []
-        self.loss = []
-        self.val_loss = []
         self.init_callbacks()
 
     def init_callbacks(self):
@@ -44,8 +42,6 @@ class LSTMChemTrainer(object):
             use_multiprocessing=True,
             shuffle=True,
             callbacks=self.callbacks)
-        self.loss.extend(history.history['loss'])
-        self.val_loss.extend(history.history['val_loss'])
 
         last_weight_file = glob(
             os.path.join(

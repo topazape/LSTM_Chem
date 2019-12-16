@@ -1,5 +1,6 @@
 import numpy as np
 from tqdm import tqdm
+import tensorflow as tf
 from lstm_chem.utils.smiles_tokenizer import SmilesTokenizer
 
 
@@ -19,10 +20,10 @@ class LSTMChemGenerator(object):
         for _ in tqdm(range(num)):
             start_a = start
             sequence = start_a
-            while sequence[-1] != 'E' and len(
-                    sequence) < self.config.smiles_max_length:
+            while sequence[-1] != 'E' and len(self.st.tokenize(
+                    sequence)) <= self.config.smiles_max_length:
                 x = self.st.one_hot_encode(self.st.tokenize(sequence))
-                preds = self.model.predict(x)[0][-1]
+                preds = self.model.predict_on_batch(x)[0][-1]
                 next_a = self.sample_with_temp(preds)
                 sequence += self.st.table[next_a]
             sequence = sequence[1:].rstrip('E')

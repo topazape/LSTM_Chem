@@ -1,6 +1,7 @@
 import json
 import os
 import numpy as np
+from tqdm import tqdm
 from tensorflow.keras.utils import Sequence
 from lstm_chem.utils.smiles_tokenizer import SmilesTokenizer
 
@@ -51,7 +52,7 @@ class DataLoader(Sequence):
     def _load(self, data_filename):
         length = self.config.data_length
         print('loading SMILES...')
-        with open(self.config.data_filename) as f:
+        with open(data_filename) as f:
             smiles = [s.rstrip() for s in f]
         if length != 0:
             smiles = smiles[:length]
@@ -61,11 +62,7 @@ class DataLoader(Sequence):
     def _tokenize(self, smiles):
         assert isinstance(smiles, list)
         print('tokenizing SMILES...')
-        if self.config.verbose_training:
-            from tqdm import tqdm
-            tokenized_smiles = [self.st.tokenize(smi) for smi in tqdm(smiles)]
-        else:
-            tokenized_smiles = [self.st.tokenize(smi) for smi in smiles]
+        tokenized_smiles = [self.st.tokenize(smi) for smi in tqdm(smiles)]
 
         if self.data_type == 'train':
             for tokenized_smi in tokenized_smiles:
@@ -92,9 +89,17 @@ class DataLoader(Sequence):
 
     def __getitem__(self, idx):
         target_tokenized_smiles = self._set_data()
-        data = target_tokenized_smiles[idx * self.config.batch_size:(idx + 1) *
-                                       self.config.batch_size]
+        if self.data_type in ['train', 'valid']:
+            data = target_tokenized_smiles[idx *
+                                           self.config.batch_size:(idx + 1) *
+                                           self.config.batch_size]
+        else:
+            data = target_tokenized_smiles[idx *
+                                           self.config.finetune_batch_size:
+                                           (idx + 1) *
+                                           self.config.finetune_batch_size]
         data = self._padding(data)
+
         self.X, self.y = [], []
         for tp_smi in data:
             X = [self.one_hot_dict[symbol] for symbol in tp_smi[:-1]]

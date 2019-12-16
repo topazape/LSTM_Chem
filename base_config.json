@@ -18,10 +18,9 @@
 	"tensorboard_write_graph": true,
 
 	"sampling_temp": 0.75,
-	"smiles_max_length": 2048,
+	"smiles_max_length": 1024,
 
 	"finetune_epochs": 12,
 	"finetune_batch_size": 1,
 	"finetune_data_filename": "./datasets/TRPM8_inhibitors_for_fine-tune.smi",
-	"finetune_sample_num": 100
 }

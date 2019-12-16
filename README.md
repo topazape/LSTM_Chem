@@ -19,15 +19,15 @@ I strongly recommend using the GPU version of tensorflow. Learning this model wi
 RDKit and matplotlib are used for SMILES cleanup, validation, and visualization of molecules and their properties. To install RDKit, I strongly recommend using Anaconda (See [this document](https://www.rdkit.org/docs/Install.html)). Building RDKit from source is very hard.
 ## Usage
 ### Training
-Just run below. However, all the data is used according to the default setting. So please be careful, it will take a very long time.
+Just run below. However, all the data is used according to the default setting. So please be careful, it will take a very long time. If you don't have enough time, set `data_length` to a different value in `base_config.json`.
 ```console
-$ python main.py
+$ python train.py
 ```
-After training, `experiments/{exp_name}/{YYYY-mm-dd}/config.json` is generated. It's a copy of `base_config.json` with additional settings for internal varibale. Since it is used for generation, do not edit or remove.
+After training, `experiments/{exp_name}/{YYYY-mm-dd}/config.json` is generated. It's a copy of `base_config.json` with additional settings for internal varibale. Since it is used for generation, be careful when rewriting.
 ### Generation
-See `examples/Randomly_generate_SMILES.ipynb`.
+See `example_Randomly_generate_SMILES.ipynb`.
 ### fine-tuning
-See `examples/Fine-tuning_for_TRPM8.ipynb`.
+See `example_Fine-tuning_for_TRPM8.ipynb`.
 
 ## Detail
 ### Configuration
@@ -52,11 +52,10 @@ See `base_config.json`. If you want to change, please edit this file.
 | checkpoint_verbose | verbosity mode while `ModelCheckpoint` (default: `1`) |
 | tensorboard_write_graph | whether to visualize the graph in TensorBoard (defalut: `True`) |
 | sampling_temp | sampling temperature (default: `0.75`, see the paper) |
-| smiles_max_length | maximum size of generated SMILES (default: `2048`)|
+| smiles_max_length | maximum size of generated SMILES (default: `128`)|
 | finetune_epochs | epochs for fine-tuning (default: `12`, see the paper) |
 | finetune_batch_size | batch size of finetune (default: `1`) |
 | finetune_filename | filepath for fine-tune the model (`SMILES file with newline as delimiter`) |
-| finetune_sample_num | number of sampling SMILES (default: `100`, see the paper) |
 ### Preparing Dataset
 #### Get database from ChEMBL
 Download SQLite dump for ChEMBL25 (ftp://ftp.ebi.ac.uk/pub/databases/chembl/ChEMBLdb/latest/chembl_25_sqlite.tar.gz), which is 3.3 GB compressed, and 16 GB uncompressed.  

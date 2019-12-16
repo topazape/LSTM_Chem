@@ -1,6 +1,7 @@
 import os
 import time
 from tensorflow.keras import Sequential
+from tensorflow.keras.models import model_from_json
 from tensorflow.keras.layers import LSTM, Dense
 from tensorflow.keras.initializers import RandomNormal
 from lstm_chem.utils.smiles_tokenizer import SmilesTokenizer
@@ -47,10 +48,8 @@ class LSTMChem(object):
         with open(self.config.model_arch_filename, 'w') as f:
             f.write(arch)
 
-        self.model.compile(
-            optimizer=self.config.optimizer,
-            loss='categorical_crossentropy',
-        )
+        self.model.compile(optimizer=self.config.optimizer,
+                           loss='categorical_crossentropy')
 
     def save(self, checkpoint_path):
         assert self.model, 'You have to build the model first.'
@@ -62,7 +61,7 @@ class LSTMChem(object):
     def load(self, model_arch_file, checkpoint_file):
         print(f'Loading model architecture from {model_arch_file} ...')
         with open(model_arch_file) as f:
-            self.model = models.model_from_json(f.read())
+            self.model = model_from_json(f.read())
         print(f'Loading model checkpoint from {checkpoint_file} ...')
         self.model.load_weights(checkpoint_file)
         print('Loaded the Model.')
