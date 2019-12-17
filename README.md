@@ -42,7 +42,7 @@ See `base_config.json`. If you want to change, please edit this file.
 | num_epochs | number of epochs (default: `22`, see the paper) |
 | optimizer | optimizer (default: `adam`) |
 | seed | random seed (default: `42`) |
-| batch_size | batch size (default: `512`) |
+| batch_size | batch size (default: `256`) |
 | validation_split | split ratio for validation (default: `0.25`) |
 | varbose_training | verbosity mode (default: `True`) |
 | checkpoint_monitor | quantity to monitor (default: `val_loss`) |

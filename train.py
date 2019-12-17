@@ -23,10 +23,10 @@ def main():
     valid_dl.data_type = 'valid'
 
     print('Create the model.')
-    modeler = LSTMChem(config)
+    modeler = LSTMChem(config, session='train')
 
     print('Create the trainer')
-    trainer = LSTMChemTrainer(modeler, train_dl, valid_dl, config)
+    trainer = LSTMChemTrainer(modeler, train_dl, valid_dl)
 
     print('Start training the model.')
     trainer.train()

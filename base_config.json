@@ -6,7 +6,7 @@
 	"num_epochs": 22,
 	"optimizer": "adam",
 	"seed": 42,
-	"batch_size": 512,
+	"batch_size": 256,
 	"validation_split": 0.25,
 	"verbose_training": true,
 
@@ -22,5 +22,5 @@
 
 	"finetune_epochs": 12,
 	"finetune_batch_size": 1,
-	"finetune_data_filename": "./datasets/TRPM8_inhibitors_for_fine-tune.smi",
+	"finetune_data_filename": "./datasets/TRPM8_inhibitors_for_fine-tune.smi"
 }

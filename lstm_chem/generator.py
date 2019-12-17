@@ -1,31 +1,43 @@
-import numpy as np
 from tqdm import tqdm
-import tensorflow as tf
+import numpy as np
+from rdkit import Chem, RDLogger
 from lstm_chem.utils.smiles_tokenizer import SmilesTokenizer
+RDLogger.DisableLog('rdApp.*')
 
 
 class LSTMChemGenerator(object):
     def __init__(self, modeler, config):
-        self.config = config
+        self.session = modeler.session
         self.model = modeler.model
+        self.config = config
         self.st = SmilesTokenizer()
+
+    def _generate(self, sequence):
+        while (sequence[-1] != 'E') and (len(self.st.tokenize(sequence)) <=
+                                         self.config.smiles_max_length):
+            x = self.st.one_hot_encode(self.st.tokenize(sequence))
+            preds = self.model.predict_on_batch(x)[0][-1]
+            next_idx = self.sample_with_temp(preds)
+            sequence += self.st.table[next_idx]
+
+        sequence = sequence[1:].rstrip('E')
+        return sequence
 
     def sample_with_temp(self, preds):
         streched = np.log(preds) / self.config.sampling_temp
         streched_probs = np.exp(streched) / np.sum(np.exp(streched))
         return np.random.choice(range(len(streched)), p=streched_probs)
 
-    def sample(self, num=10000, start='G'):
+    def sample(self, num=1, start='G'):
         sampled = []
-        for _ in tqdm(range(num)):
-            start_a = start
-            sequence = start_a
-            while sequence[-1] != 'E' and len(self.st.tokenize(
-                    sequence)) <= self.config.smiles_max_length:
-                x = self.st.one_hot_encode(self.st.tokenize(sequence))
-                preds = self.model.predict_on_batch(x)[0][-1]
-                next_a = self.sample_with_temp(preds)
-                sequence += self.st.table[next_a]
-            sequence = sequence[1:].rstrip('E')
-            sampled.append(sequence)
-        return sampled
+        if self.session == 'generate':
+            for _ in tqdm(range(num)):
+                sampled.append(self._generate(start))
+            return sampled
+        else:
+            while len(sampled) <= num:
+                sequence = self._generate(start)
+                mol = Chem.MolFromSmiles(sequence)
+                if mol is not None:
+                    canon_smiles = Chem.MolToSmiles(mol)
+                    sampled.append(canon_smiles)

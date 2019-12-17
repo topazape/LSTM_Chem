@@ -9,38 +9,43 @@ from lstm_chem.utils.smiles_tokenizer import SmilesTokenizer
 
 class LSTMChem(object):
     def __init__(self, config, session='train'):
-        self.config = config
-        self.model = None
-        self.weight_init = RandomNormal(mean=0.0,
-                                        stddev=0.05,
-                                        seed=config.seed)
-        st = SmilesTokenizer()
+        assert session in ['train', 'generate', 'finetune'], \
+                'one of {train, generate, finetune}'
 
-        if session == 'train':
-            self.build_model(len(st.table))
+        self.config = config
+        self.session = session
+        self.model = None
+
+        if self.session == 'train':
+            self.build_model()
         else:
             self.model = self.load(self.config.model_arch_filename,
                                    self.config.model_weight_filename)
 
-    def build_model(self, n_table):
-        self.n_table = n_table
+    def build_model(self):
+        st = SmilesTokenizer()
+        n_table = len(st.table)
+        weight_init = RandomNormal(mean=0.0,
+                                   stddev=0.05,
+                                   seed=self.config.seed)
+
         self.model = Sequential()
         self.model.add(
             LSTM(units=self.config.units,
-                 input_shape=(None, self.n_table),
+                 input_shape=(None, n_table),
                  return_sequences=True,
-                 kernel_initializer=self.weight_init,
+                 kernel_initializer=weight_init,
                  dropout=0.3))
         self.model.add(
             LSTM(units=self.config.units,
-                 input_shape=(None, self.n_table),
+                 input_shape=(None, n_table),
                  return_sequences=True,
-                 kernel_initializer=self.weight_init,
+                 kernel_initializer=weight_init,
                  dropout=0.5))
         self.model.add(
-            Dense(units=self.n_table,
+            Dense(units=n_table,
                   activation='softmax',
-                  kernel_initializer=self.weight_init))
+                  kernel_initializer=weight_init))
 
         arch = self.model.to_json(indent=2)
         self.config.model_arch_filename = os.path.join(self.config.exp_dir,
@@ -61,8 +66,8 @@ class LSTMChem(object):
     def load(self, model_arch_file, checkpoint_file):
         print(f'Loading model architecture from {model_arch_file} ...')
         with open(model_arch_file) as f:
-            self.model = model_from_json(f.read())
+            model = model_from_json(f.read())
         print(f'Loading model checkpoint from {checkpoint_file} ...')
-        self.model.load_weights(checkpoint_file)
+        model.load_weights(checkpoint_file)
         print('Loaded the Model.')
-        return self.model
+        return model

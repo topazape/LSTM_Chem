@@ -4,9 +4,9 @@ from tensorflow.keras.callbacks import ModelCheckpoint, TensorBoard
 
 
 class LSTMChemTrainer(object):
-    def __init__(self, modeler, train_data_loader, valid_data_loader, config):
+    def __init__(self, modeler, train_data_loader, valid_data_loader):
         self.model = modeler.model
-        self.config = config
+        self.config = modeler.config
         self.train_data_loader = train_data_loader
         self.valid_data_loader = valid_data_loader
         self.callbacks = []
@@ -46,7 +46,8 @@ class LSTMChemTrainer(object):
         last_weight_file = glob(
             os.path.join(
                 f'{self.config.checkpoint_dir}',
-                f'{self.config.exp_name}-{self.config.num_epochs:02}*.hdf5'))[0]
+                f'{self.config.exp_name}-{self.config.num_epochs:02}*.hdf5')
+        )[0]
 
         assert os.path.exists(last_weight_file)
         self.config.model_weight_filename = last_weight_file
