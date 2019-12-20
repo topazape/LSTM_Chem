@@ -1,15 +1,13 @@
 from tqdm import tqdm
 import numpy as np
-from rdkit import Chem, RDLogger
 from lstm_chem.utils.smiles_tokenizer import SmilesTokenizer
-RDLogger.DisableLog('rdApp.*')
 
 
 class LSTMChemGenerator(object):
-    def __init__(self, modeler, config):
+    def __init__(self, modeler):
         self.session = modeler.session
         self.model = modeler.model
-        self.config = config
+        self.config = modeler.config
         self.st = SmilesTokenizer()
 
     def _generate(self, sequence):
@@ -35,6 +33,8 @@ class LSTMChemGenerator(object):
                 sampled.append(self._generate(start))
             return sampled
         else:
+            from rdkit import Chem, RDLogger
+            RDLogger.DisableLog('rdApp.*')
             while len(sampled) <= num:
                 sequence = self._generate(start)
                 mol = Chem.MolFromSmiles(sequence)

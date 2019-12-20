@@ -3,11 +3,11 @@ from lstm_chem.generator import LSTMChemGenerator
 
 
 class LSTMChemFinetuner(LSTMChemGenerator):
-    def __init__(self, modeler, finetune_data_loader, config):
+    def __init__(self, modeler, finetune_data_loader):
         self.session = modeler.session
         self.model = modeler.model
+        self.config = modeler.config
         self.finetune_data_loader = finetune_data_loader
-        self.config = config
         self.st = SmilesTokenizer()
 
     def finetune(self):

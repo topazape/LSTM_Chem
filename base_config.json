@@ -5,9 +5,9 @@
 	"units": 256,
 	"num_epochs": 22,
 	"optimizer": "adam",
-	"seed": 42,
-	"batch_size": 256,
-	"validation_split": 0.25,
+	"seed": 71,
+	"batch_size": 512,
+	"validation_split": 0.10,
 	"verbose_training": true,
 
 	"checkpoint_monitor": "val_loss",

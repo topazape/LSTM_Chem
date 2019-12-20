@@ -1,10 +1,11 @@
 # LSTM_Chem
 This is the implementation of the paper - [Generative Recurrent Networks for De Novo Drug Design](https://doi.org/10.1002/minf.201700111)
-## Update (2019/12/17)
+## Update
 * Reimplimented all code to use tensorflow 2.0.0 (tf.keras)
 * Changed data_loader to use generator to reduce memory usage
 * Removed some unused atoms and symbols
 * Changed directory layout
+
 ## Requirements
 This model is built using Python 3.7.5, and utilizes the following packages;
 
@@ -15,8 +16,9 @@ This model is built using Python 3.7.5, and utilizes the following packages;
 * matplotlib 3.1.2
 * RDKit 2019.03.4
 
-I strongly recommend using the GPU version of tensorflow. Learning this model with all the data is very slow in CPU mode (about 9 hrs / epoch). Since tensorflow 2.0.0 depends on CUDA 10.0, be careful that your environment accepts the correct version.  
-RDKit and matplotlib are used for SMILES cleanup, validation, and visualization of molecules and their properties. To install RDKit, I strongly recommend using Anaconda (See [this document](https://www.rdkit.org/docs/Install.html)). Building RDKit from source is very hard.
+I strongly recommend using GPU version of tensorflow. Learning this model with all the data is very slow in CPU mode (about 9 hrs / epoch). Since tensorflow 2.0.0 depends on CUDA 10.0, be careful that your environment accepts the correct version.  
+RDKit and matplotlib are used for SMILES cleanup, validation, and visualization of molecules and their properties. To install RDKit, I strongly recommend using Anaconda (See [this document](https://www.rdkit.org/docs/Install.html)). Building RDKit from source is hard.
+
 ## Usage
 ### Training
 Just run below. However, all the data is used according to the default setting. So please be careful, it will take a very long time. If you don't have enough time, set `data_length` to a different value in `base_config.json`.
@@ -41,9 +43,9 @@ See `base_config.json`. If you want to change, please edit this file.
 | units | size of hidden state vector of two LSTM layers (default: `256`, see the paper) |
 | num_epochs | number of epochs (default: `22`, see the paper) |
 | optimizer | optimizer (default: `adam`) |
-| seed | random seed (default: `42`) |
-| batch_size | batch size (default: `256`) |
-| validation_split | split ratio for validation (default: `0.25`) |
+| seed | random seed (default: `71`) |
+| batch_size | batch size (default: `512`) |
+| validation_split | split ratio for validation (default: `0.10`) |
 | varbose_training | verbosity mode (default: `True`) |
 | checkpoint_monitor | quantity to monitor (default: `val_loss`) |
 | checkpoint_mode | one of {`auto`, `min`, `max`} (default: `min`) |
@@ -52,7 +54,7 @@ See `base_config.json`. If you want to change, please edit this file.
 | checkpoint_verbose | verbosity mode while `ModelCheckpoint` (default: `1`) |
 | tensorboard_write_graph | whether to visualize the graph in TensorBoard (defalut: `True`) |
 | sampling_temp | sampling temperature (default: `0.75`, see the paper) |
-| smiles_max_length | maximum size of generated SMILES (default: `1024`)|
+| smiles_max_length | maximum size of generated SMILES (symbol) length (default: `1024`)|
 | finetune_epochs | epochs for fine-tuning (default: `12`, see the paper) |
 | finetune_batch_size | batch size of finetune (default: `1`) |
 | finetune_filename | filepath for fine-tune the model (`SMILES file with newline as delimiter`) |
