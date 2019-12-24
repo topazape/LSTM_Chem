@@ -6,7 +6,7 @@
 	"num_epochs": 22,
 	"optimizer": "adam",
 	"seed": 71,
-	"batch_size": 512,
+	"batch_size": 256,
 	"validation_split": 0.10,
 	"verbose_training": true,
 
@@ -18,7 +18,7 @@
 	"tensorboard_write_graph": true,
 
 	"sampling_temp": 0.75,
-	"smiles_max_length": 1024,
+	"smiles_max_length": 128,
 
 	"finetune_epochs": 12,
 	"finetune_batch_size": 1,

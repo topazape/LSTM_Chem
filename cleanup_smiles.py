@@ -5,8 +5,10 @@ import os
 from tqdm import tqdm
 from rdkit import Chem, RDLogger
 from rdkit.Chem import MolStandardize
+from lstm_chem.utils.smiles_tokenizer import SmilesTokenizer
 
 RDLogger.DisableLog('rdApp.*')
+
 
 class Preprocessor(object):
     def __init__(self):
@@ -25,7 +27,8 @@ class Preprocessor(object):
         else:
             return None
 
-def main(input_file, output_file):
+
+def main(input_file, output_file, **kwargs):
     assert os.path.exists(input_file)
     assert not os.path.exists(output_file), f'{output_file} already exists.'
 
@@ -40,19 +43,36 @@ def main(input_file, output_file):
     pp_smiles = [pp.process(smi) for smi in tqdm(smiles)]
     cl_smiles = list(set([s for s in pp_smiles if s]))
 
+    # token limits (34 to 74)
+    out_smiles = []
+    st = SmilesTokenizer()
+
+    if kwargs['finetune']:
+        for cl_smi in cl_smiles:
+            tokenized_smi = st.tokenize(cl_smi)
+            if 34 <= len(tokenized_smi) <= 74:
+                out_smiles.append(cl_smi)
+    else:
+        out_smiles = cl_smiles
+
     print('done.')
-    print(f'output SMILES num: {len(cl_smiles)}')
+    print(f'output SMILES num: {len(out_smiles)}')
 
     with open(output_file, 'w') as f:
-        for smi in cl_smiles:
+        for smi in out_smiles:
             f.write(smi + '\n')
 
     return
 
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser(description='remove salts and stereochemical infomation from SMILES')
+    parser = argparse.ArgumentParser(
+        description='remove salts and stereochemical infomation from SMILES')
     parser.add_argument('input', help='input file')
     parser.add_argument('output', help='output file')
+    parser.add_argument('-ft',
+                        '--finetune',
+                        action='store_false',
+                        help='for finetuning. ignore token length limitation.')
     args = parser.parse_args()
-    main(args.input, args.output)
+    main(args.input, args.output, finetune=args.finetune)

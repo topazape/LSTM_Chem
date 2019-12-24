@@ -35,9 +35,10 @@ class LSTMChemGenerator(object):
         else:
             from rdkit import Chem, RDLogger
             RDLogger.DisableLog('rdApp.*')
-            while len(sampled) <= num:
+            while len(sampled) < num:
                 sequence = self._generate(start)
                 mol = Chem.MolFromSmiles(sequence)
                 if mol is not None:
                     canon_smiles = Chem.MolToSmiles(mol)
                     sampled.append(canon_smiles)
+            return sampled

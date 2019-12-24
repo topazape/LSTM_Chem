@@ -44,7 +44,7 @@ See `base_config.json`. If you want to change, please edit this file.
 | num_epochs | number of epochs (default: `22`, see the paper) |
 | optimizer | optimizer (default: `adam`) |
 | seed | random seed (default: `71`) |
-| batch_size | batch size (default: `512`) |
+| batch_size | batch size (default: `256`) |
 | validation_split | split ratio for validation (default: `0.10`) |
 | varbose_training | verbosity mode (default: `True`) |
 | checkpoint_monitor | quantity to monitor (default: `val_loss`) |
@@ -54,7 +54,7 @@ See `base_config.json`. If you want to change, please edit this file.
 | checkpoint_verbose | verbosity mode while `ModelCheckpoint` (default: `1`) |
 | tensorboard_write_graph | whether to visualize the graph in TensorBoard (defalut: `True`) |
 | sampling_temp | sampling temperature (default: `0.75`, see the paper) |
-| smiles_max_length | maximum size of generated SMILES (symbol) length (default: `1024`)|
+| smiles_max_length | maximum size of generated SMILES (symbol) length (default: `128`)|
 | finetune_epochs | epochs for fine-tuning (default: `12`, see the paper) |
 | finetune_batch_size | batch size of finetune (default: `1`) |
 | finetune_filename | filepath for fine-tune the model (`SMILES file with newline as delimiter`) |
@@ -96,11 +96,11 @@ WHERE
   );
 
 ```
-You can get 556134 SMILES in `dataset.smi`. According to the paper, the dataset was preprocessed and duplicates, salts, and stereochemical information were removed. So I made SMILES clean up script. Run the following to get cleansed SMILES. It takes about 10 miniutes or more. Please wait.
+You can get 556134 SMILES in `dataset.smi`. According to the paper, the dataset was preprocessed and duplicates, salts, and stereochemical information were removed, SMILES strings with lengths from 34 to 74 (tokens). So I made SMILES clean up script. Run the following to get cleansed SMILES. It takes about 10 miniutes or more. Please wait.
 ```console
 $ python cleanup_smiles.py datasets/dataset.smi datasets/dataset_cleansed.smi
 ```
-You can get 524812 SMILES. This dataset is used for training.
+You can get 438552 SMILES. This dataset is used for training.
 #### SMILES for fine-tuning
 The paper shows 5 TRPM8 antagonists for fine-tuning.
 ```console
@@ -148,8 +148,8 @@ WHERE
   AND standard_relation IN ("<", "<<", "<=", "=")
   AND activities.molregno = compound_structures.molregno;
 ```
-You can get 494 known TRPM8 inhibitors. As described above, clean up the TRPM8 inhibitor SMILES.
+You can get 494 known TRPM8 inhibitors. As described above, clean up the TRPM8 inhibitor SMILES. Please use the `-ft` option to ignore SMILES strings (tokens) length restriction.
 ```console
-$ python cleanup_smiles.py datasets/known-TRPM8-inhibitors.smi datasets/known_TRPM8-inhibitors_cleansed.smi
+$ python cleanup_smiles.py -ft datasets/known-TRPM8-inhibitors.smi datasets/known_TRPM8-inhibitors_cleansed.smi
 ```
 You can get 477 SMILES. I used this for mere visualization of the results of fine-tuning.
