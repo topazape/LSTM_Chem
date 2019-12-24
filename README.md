@@ -33,7 +33,7 @@ See `example_Fine-tuning_for_TRPM8.ipynb`.
 
 ## Detail
 ### Configuration
-See `base_config.json`. If you want to change, please edit this file.
+See `base_config.json`. If you want to change, please edit this file before training.
 
 | parameters | meaning |
 | ---- | ---- |
