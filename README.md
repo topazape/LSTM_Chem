@@ -15,9 +15,11 @@ This model is built using Python 3.7.5, and utilizes the following packages;
 * Bunch 1.0.1
 * matplotlib 3.1.2
 * RDKit 2019.03.4
+* scikit-learn 0.22
 
 I strongly recommend using GPU version of tensorflow. Learning this model with all the data is very slow in CPU mode (about 9 hrs / epoch). Since tensorflow 2.0.0 depends on CUDA 10.0, be careful that your environment accepts the correct version.  
-RDKit and matplotlib are used for SMILES cleanup, validation, and visualization of molecules and their properties. To install RDKit, I strongly recommend using Anaconda (See [this document](https://www.rdkit.org/docs/Install.html)). Building RDKit from source is hard.
+RDKit and matplotlib are used for SMILES cleanup, validation, and visualization of molecules and their properties. To install RDKit, I strongly recommend using Anaconda (See [this document](https://www.rdkit.org/docs/Install.html)). Building RDKit from source is hard.  
+Scikit-learn is used for PCA.
 
 ## Usage
 ### Training
