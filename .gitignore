@@ -105,3 +105,4 @@ RDKit/
 .envrc
 Pipfile
 Pipfile.lock
+.idea/
