@@ -91,6 +91,10 @@ pluggy = "*"
 python-jsonrpc-server = ">=0.3.2"
 ujson = "<=1.35"
 
+[package.dependencies.yapf]
+optional = true
+version = "*"
+
 [package.extras]
 all = ["autopep8", "flake8", "mccabe", "pycodestyle", "pydocstyle (>=2.0.0)", "pyflakes (>=1.6.0)", "pylint", "rope (>=0.10.5)", "yapf"]
 autopep8 = ["autopep8"]
@@ -115,6 +119,14 @@ version = "1.35"
 
 [[package]]
 category = "dev"
+description = "A formatter for Python code."
+name = "yapf"
+optional = false
+python-versions = "*"
+version = "0.29.0"
+
+[[package]]
+category = "dev"
 description = "Backport of pathlib-compatible object wrapper for zip files"
 marker = "python_version < \"3.8\""
 name = "zipp"
@@ -127,7 +139,7 @@ docs = ["sphinx", "jaraco.packaging (>=3.2)", "rst.linker (>=1.9)"]
 testing = ["jaraco.itertools", "func-timeout"]
 
 [metadata]
-content-hash = "9d43cc7cc076db34eed76ddf836459a5a65e7a95a44682d79a26aa9f6d253771"
+content-hash = "45113696d7cfc025293fcb52fc9d736529c9d3183ffda747a8d5c5746f016d95"
 python-versions = "^3.7"
 
 [metadata.files]
@@ -180,6 +192,10 @@ python-language-server = [
 ]
 ujson = [
     {file = "ujson-1.35.tar.gz", hash = "sha256:f66073e5506e91d204ab0c614a148d5aa938bdbf104751be66f8ad7a222f5f86"},
+]
+yapf = [
+    {file = "yapf-0.29.0-py2.py3-none-any.whl", hash = "sha256:cad8a272c6001b3401de3278238fdc54997b6c2e56baa751788915f879a52fca"},
+    {file = "yapf-0.29.0.tar.gz", hash = "sha256:712e23c468506bf12cadd10169f852572ecc61b266258422d45aaf4ad7ef43de"},
 ]
 zipp = [
     {file = "zipp-3.1.0-py3-none-any.whl", hash = "sha256:aa36550ff0c0b7ef7fa639055d797116ee891440eac1a56f378e2d3179e0320b"},
