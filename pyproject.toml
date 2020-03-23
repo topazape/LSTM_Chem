@@ -8,11 +8,12 @@ license = "The Unlicense"
 [tool.poetry.dependencies]
 python = "^3.7"
 numpy = "^1.18.1"
-tensorflow = "^2.1.0"
 tqdm = "^4.43.0"
 bunch = "^1.0.1"
 matplotlib = "^3.2.1"
 scikit-learn = "^0.22.2"
+tensorflow = "2.1.0"
+tensorflow-estimator = "2.1.0"
 
 [tool.poetry.dev-dependencies]
 python-language-server = {extras = ["yapf"], version = "^0.31.8"}

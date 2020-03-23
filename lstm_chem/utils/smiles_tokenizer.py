@@ -1,4 +1,3 @@
-import copy
 import numpy as np
 
 
@@ -28,7 +27,7 @@ class SmilesTokenizer(object):
             'S',
             'K',
             'V',
-            'I',
+            'I'
         ]
         special = [
             '(', ')', '[', ']', '=', '#', '%', '0', '1', '2', '3', '4', '5',
