@@ -4,32 +4,8 @@ import numpy as np
 class SmilesTokenizer(object):
     def __init__(self):
         atoms = [
-            'Li',
-            'Na',
-            'Al',
-            'Si',
-            'Cl',
-            'Sc',
-            'Zn',
-            'As',
-            'Se',
-            'Br',
-            'Sn',
-            'Te',
-            'Cn',
-            'H',
-            'B',
-            'C',
-            'N',
-            'O',
-            'F',
-            'P',
-            'S',
-            'K',
-            'V',
-            'I'
-#            'Al', 'As', 'B', 'Br', 'C', 'Cl', 'F', 'H', 'I', 'K', 'Li', 'N',
-#            'Na', 'O', 'P', 'S', 'Se', 'Si', 'Te'
+            'Al', 'As', 'B', 'Br', 'C', 'Cl', 'F', 'H', 'I', 'K', 'Li', 'N',
+            'Na', 'O', 'P', 'S', 'Se', 'Si', 'Te'
         ]
         special = [
             '(', ')', '[', ']', '=', '#', '%', '0', '1', '2', '3', '4', '5',
