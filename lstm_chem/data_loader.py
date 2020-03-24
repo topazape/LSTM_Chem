@@ -110,7 +110,7 @@ class DataLoader(Sequence):
         self.X = np.array(self.X, dtype=np.float32)
         self.y = np.array(self.y, dtype=np.float32)
 
-        return self.X, self.y
+        return self.X, self.y, [None]
 
     def _pad(self, tokenized_smi):
         return ['G'] + tokenized_smi + ['E'] + [
