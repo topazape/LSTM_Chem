@@ -32,7 +32,8 @@ class LSTMChemTrainer(object):
             ))
 
     def train(self):
-        history = self.model.fit_generator(
+#        history = self.model.fit_generator(
+        history = self.model.fit(
             self.train_data_loader,
             steps_per_epoch=self.train_data_loader.__len__(),
             epochs=self.config.num_epochs,
