@@ -1,33 +1,41 @@
 # LSTM_Chem
 This is the implementation of the paper - [Generative Recurrent Networks for De Novo Drug Design](https://doi.org/10.1002/minf.201700111)
-## Update
+## Changelog
+### 2020-03-25
+* Used tensorflow 2.1.0 (tf.keras)
+### 2019-12-23
 * Reimplimented all code to use tensorflow 2.0.0 (tf.keras)
 * Changed data_loader to use generator to reduce memory usage
 * Removed some unused atoms and symbols
 * Changed directory layout
 
 ## Requirements
-This model is built using Python 3.7.5, and utilizes the following packages;
+This model is built using Python 3.7, and utilizes the following packages;
 
-* numpy 1.17.4
-* tensorflow-gpu 2.0.0
-* tqdm 4.40.2
+* numpy 1.18.2
+* tensorflow 2.1.0
+* tqdm 4.43.0
 * Bunch 1.0.1
 * matplotlib 3.1.2
-* RDKit 2019.03.4
-* scikit-learn 0.22
+* RDKit 2019.09.3
+* scikit-learn 0.22.2.post1
 
-I strongly recommend using GPU version of tensorflow. Learning this model with all the data is very slow in CPU mode (about 9 hrs / epoch). Since tensorflow 2.0.0 depends on CUDA 10.0, be careful that your environment accepts the correct version.  
-RDKit and matplotlib are used for SMILES cleanup, validation, and visualization of molecules and their properties. To install RDKit, I strongly recommend using Anaconda (See [this document](https://www.rdkit.org/docs/Install.html)). Building RDKit from source is hard.  
+I strongly recommend using GPU version of tensorflow.
+Learning this model with all the data is very slow in CPU mode (about 9 hrs / epoch).
+Since tensorflow 2.1.0 depends on CUDA 10.1, be careful that your environment accepts the correct version.  
+RDKit and matplotlib are used for SMILES cleanup, validation, and visualization of molecules and their properties.
+To install RDKit, I strongly recommend using Anaconda (See [this document](https://www.rdkit.org/docs/Install.html)). Building RDKit from source is hard.  
 Scikit-learn is used for PCA.
 
 ## Usage
 ### Training
-Just run below. However, all the data is used according to the default setting. So please be careful, it will take a very long time. If you don't have enough time, set `data_length` to a different value in `base_config.json`.
+Just run below. However, all the data is used according to the default setting. So please be careful, it will take a long time.
+If you don't have enough time, set `data_length` to a different value in `base_config.json`.
 ```console
 $ python train.py
 ```
-After training, `experiments/{exp_name}/{YYYY-mm-dd}/config.json` is generated. It's a copy of `base_config.json` with additional settings for internal varibale. Since it is used for generation, be careful when rewriting.
+After training, `experiments/{exp_name}/{YYYY-mm-dd}/config.json` is generated.
+It's a copy of `base_config.json` with additional settings for internal varibale. Since it is used for generation, be careful when rewriting.
 ### Generation
 See `example_Randomly_generate_SMILES.ipynb`.
 ### fine-tuning
@@ -62,7 +70,8 @@ See `base_config.json`. If you want to change, please edit this file before trai
 | finetune_filename | filepath for fine-tune the model (`SMILES file with newline as delimiter`) |
 ### Preparing Dataset
 #### Get database from ChEMBL
-Download SQLite dump for ChEMBL25 (ftp://ftp.ebi.ac.uk/pub/databases/chembl/ChEMBLdb/latest/chembl_25_sqlite.tar.gz), which is 3.3 GB compressed, and 16 GB uncompressed.  
+Download SQLite dump for ChEMBL25 (ftp://ftp.ebi.ac.uk/pub/databases/chembl/ChEMBLdb/latest/chembl_25_sqlite.tar.gz),
+which is 3.3 GB compressed, and 16 GB uncompressed.  
 Unpack it the usual way, `cd` into the directory, and open the database using sqlite console.
 #### Extract SMILES for training
 ```console
@@ -98,7 +107,10 @@ WHERE
   );
 
 ```
-You can get 556134 SMILES in `dataset.smi`. According to the paper, the dataset was preprocessed and duplicates, salts, and stereochemical information were removed, SMILES strings with lengths from 34 to 74 (tokens). So I made SMILES clean up script. Run the following to get cleansed SMILES. It takes about 10 miniutes or more. Please wait.
+You can get 556134 SMILES in `dataset.smi`. According to the paper,
+the dataset was preprocessed and duplicates, salts, and stereochemical information were removed,
+SMILES strings with lengths from 34 to 74 (tokens). So I made SMILES clean up script.
+Run the following to get cleansed SMILES. It takes about 10 miniutes or more. Please wait.
 ```console
 $ python cleanup_smiles.py datasets/dataset.smi datasets/dataset_cleansed.smi
 ```
@@ -150,7 +162,8 @@ WHERE
   AND standard_relation IN ("<", "<<", "<=", "=")
   AND activities.molregno = compound_structures.molregno;
 ```
-You can get 494 known TRPM8 inhibitors. As described above, clean up the TRPM8 inhibitor SMILES. Please use the `-ft` option to ignore SMILES strings (tokens) length restriction.
+You can get 494 known TRPM8 inhibitors. As described above, clean up the TRPM8 inhibitor SMILES.
+Please use the `-ft` option to ignore SMILES strings (tokens) length restriction.
 ```console
 $ python cleanup_smiles.py -ft datasets/known-TRPM8-inhibitors.smi datasets/known_TRPM8-inhibitors_cleansed.smi
 ```
