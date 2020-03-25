@@ -14,7 +14,8 @@ class LSTMChemFinetuner(LSTMChemGenerator):
         self.model.compile(optimizer=self.config.optimizer,
                            loss='categorical_crossentropy')
 
-        history = self.model.fit_generator(
+#        history = self.model.fit_generator(
+        history = self.model.fit(
             self.finetune_data_loader,
             steps_per_epoch=self.finetune_data_loader.__len__(),
             epochs=self.config.finetune_epochs,
