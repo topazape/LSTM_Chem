@@ -2,7 +2,7 @@
 This is the implementation of the paper - [Generative Recurrent Networks for De Novo Drug Design](https://doi.org/10.1002/minf.201700111)
 ## Changelog
 ### 2020-03-25
-* Used tensorflow 2.1.0 (tf.keras)
+* Changed the code to use tensorflow 2.1.0 (tf.keras)
 ### 2019-12-23
 * Reimplimented all code to use tensorflow 2.0.0 (tf.keras)
 * Changed data_loader to use generator to reduce memory usage
