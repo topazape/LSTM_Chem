@@ -12,7 +12,7 @@ tqdm = "^4.43.0"
 bunch = "^1.0.1"
 matplotlib = "^3.2.1"
 scikit-learn = "^0.22.2"
-tensorflow = "2.1.0"
+tensorflow = "2.1.2"
 tensorflow-estimator = "2.1.0"
 pillow = "^7.0.0"
 
