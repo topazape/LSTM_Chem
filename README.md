@@ -1,7 +1,7 @@
 # LSTM_Chem
 This is the implementation of the paper - [Generative Recurrent Networks for De Novo Drug Design](https://doi.org/10.1002/minf.201700111)
 ## Changelog
-### 2021-0809
+### 2021-08-09
 * Now support tensorflow >= 2.5.0
 ### 2020-03-25
 * Changed the code to use tensorflow 2.1.0 (tf.keras)
