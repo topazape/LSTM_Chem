@@ -1,6 +1,8 @@
 # LSTM_Chem
 This is the implementation of the paper - [Generative Recurrent Networks for De Novo Drug Design](https://doi.org/10.1002/minf.201700111)
 ## Changelog
+### 2021-0809
+* Now support tensorflow >= 2.5.0
 ### 2020-03-25
 * Changed the code to use tensorflow 2.1.0 (tf.keras)
 ### 2019-12-23
@@ -10,21 +12,10 @@ This is the implementation of the paper - [Generative Recurrent Networks for De 
 * Changed directory layout
 
 ## Requirements
-This model is built using Python 3.7, and utilizes the following packages;
-
-* numpy 1.18.2
-* tensorflow 2.1.0
-* tqdm 4.43.0
-* Bunch 1.0.1
-* matplotlib 3.1.2
-* RDKit 2019.09.3
-* scikit-learn 0.22.2.post1
-
-I strongly recommend using GPU version of tensorflow.
-Learning this model with all the data is very slow in CPU mode (about 9 hrs / epoch).
-Since tensorflow 2.1.0 depends on CUDA 10.1, be careful that your environment accepts the correct version.  
+This model is built using Python 3.7. See `Pipfile` or `requirements.txt` for dependencies.
+I strongly recommend using GPU version of tensorflow.Learning this model with all the data is very slow in CPU mode (about 9 hrs / epoch).
 RDKit and matplotlib are used for SMILES cleanup, validation, and visualization of molecules and their properties.
-To install RDKit, I strongly recommend using Anaconda (See [this document](https://www.rdkit.org/docs/Install.html)). Building RDKit from source is hard.  
+Recently, RDKit can be installed with `pip`, you don't have to use Anaconda!
 Scikit-learn is used for PCA.
 
 ## Usage
