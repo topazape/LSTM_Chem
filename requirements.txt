@@ -93,7 +93,7 @@ tensorboard-data-server==0.6.1; python_version >= '3.6'
 tensorboard-plugin-wit==1.8.0
 tensorboard==2.6.0; python_version >= '3.6'
 tensorflow-estimator==2.6.0
-tensorflow==2.6.0rc2
+tensorflow==2.7.2
 termcolor==1.1.0
 terminado==0.12.1; python_version >= '3.6'
 testpath==0.5.0; python_version >= '3.5'
